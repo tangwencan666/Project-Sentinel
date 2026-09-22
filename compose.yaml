@@ -1,0 +1,23 @@
+name: sentinel-portfolio
+services:
+  sentinel-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile.demo
+    image: project-sentinel:portfolio
+    ports: ["127.0.0.1:${DEMO_PORT:-18082}:8000"]
+    environment:
+      PUBLIC_DEMO_MODE: "true"
+      DEMO_ALLOWED_HOSTS: ${DEMO_ALLOWED_HOSTS:-localhost,127.0.0.1,sentinel-demo}
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 64
+    mem_limit: 192m
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

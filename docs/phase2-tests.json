@@ -1,0 +1,8 @@
+{
+  "source": "observed real pytest execution in Compose service image",
+  "command": "docker compose run --rm --no-deps sentinel python -m pytest -q -p no:cacheprovider tests/test_controls.py tests/test_agent_phase2.py",
+  "result": "29 passed in 6.25s",
+  "passed": 29,
+  "failed": 0,
+  "note": "9 pricing contract cases are separately rerun for each baseline/candidate. Baseline failures are intentional negative controls. HTTP protocol failure harness is not a real-model accuracy trial."
+}

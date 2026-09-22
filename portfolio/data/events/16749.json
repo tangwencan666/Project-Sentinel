@@ -1,0 +1,1 @@
+{"id":16749,"incident_id":"886f2474-3eac-40fa-9368-e3fb829761bc","ts":"2026-09-22T02:31:55.169100+00:00","kind":"Tool Finished","payload":{"tool":"get_trace","agent":"Triage","run_id":"759044e6-c016-489b-a459-137ca4846462","status":"succeeded","evidence_ids":["E-a39444c16e1d4772"],"tool_call_id":"b96fccc0-bdd9-4de7-9965-a8e403a5fd87"}}

@@ -1,0 +1,369 @@
+{
+  "incident_id": "806c8571-7f65-4bce-b4bb-143470bb66c6",
+  "origin": "AI_GENERATED",
+  "artifact": {
+    "diff": "--- a/services/pricing.py\n+++ b/services/pricing.py\n@@ -3,4 +3,4 @@\n def total(price: float, quantity: int, discount: float | None = 0) -> float:\n     if price < 0 or quantity < 1:\n         raise ValueError(\"invalid order\")\n-    return round(price * quantity * (1 - discount), 2)\n+    return round(price * quantity * (1 - (discount or 0)), 2)\n",
+    "origin": "AI_GENERATED",
+    "replay": {
+      "after": {
+        "scope": "isolated pricing HTTP replay with live inventory; no payment/order writes",
+        "p50_ms": 18.479372000001604,
+        "p95_ms": 26.600367750324956,
+        "p99_ms": 32.87182314899836,
+        "source": "Measured",
+        "db_pool": null,
+        "requests": 20,
+        "error_pct": 0.0,
+        "kafka_lag": null,
+        "observations": [
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 34.43968699866673
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 20.074599000508897
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 20.853153999269125
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 18.746215999271953
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 19.354824000402004
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 22.613094000917044
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 19.187471998520778
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 17.52881900029024
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 17.604652000954957
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 18.224677000034717
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 25.26056399983645
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 16.3785739987361
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 16.894304999368615
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 16.59900800041214
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 17.07324600101856
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 16.651571000693366
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 18.73406699996849
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 17.07308900040516
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 16.89513300152612
+          },
+          {
+            "body": {
+              "total": 11.0,
+              "inventory_price": 11.0
+            },
+            "status": 200,
+            "duration_ms": 26.187772000412224
+          }
+        ],
+        "not_applicable": [
+          "db_pool",
+          "kafka_lag"
+        ],
+        "throughput_rps": 50.40523134523592,
+        "duration_seconds": 0.39678421200005687,
+        "healthy_control_passed": true
+      },
+      "before": {
+        "scope": "isolated pricing HTTP replay with live inventory; no payment/order writes",
+        "p50_ms": 22.43894950061076,
+        "p95_ms": 46.10493854870584,
+        "p99_ms": 52.37354850982227,
+        "source": "Measured",
+        "db_pool": null,
+        "requests": 20,
+        "error_pct": 100.0,
+        "kafka_lag": null,
+        "observations": [
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 41.36508100054925
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 22.5743640003202
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 21.872282999538584
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 53.9407010001014
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 18.147487000533147
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 17.984187999900314
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 18.57428099901881
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 18.131339000319713
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 19.013878001715057
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 17.5378220010316
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 25.213541999619338
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 19.430110000030254
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 17.63635899988003
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 35.49899500103493
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 22.605473999647074
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 22.30353500090132
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 25.966244998926413
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 30.45011200083536
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 45.69252999863238
+          },
+          {
+            "body": {
+              "error": "TypeError"
+            },
+            "status": 500,
+            "duration_ms": 32.45714700096869
+          }
+        ],
+        "not_applicable": [
+          "db_pool",
+          "kafka_lag"
+        ],
+        "throughput_rps": 37.96552457778479,
+        "duration_seconds": 0.5267937219996384,
+        "healthy_control_passed": true
+      },
+      "passed": true
+    },
+    "sha256": "25d7703f896bf720217609390c8533787be813603e1137d43510c5b5aa101498",
+    "source": "\"\"\"Order pricing. This module is the allowlisted patch target.\"\"\"\n\ndef total(price: float, quantity: int, discount: float | None = 0) -> float:\n    if price < 0 or quantity < 1:\n        raise ValueError(\"invalid order\")\n    return round(price * quantity * (1 - (discount or 0)), 2)\n",
+    "status": "CANDIDATE_VERIFIED",
+    "patch_id": "9e123564-5283-4ade-8146-eaa64a9d07bc",
+    "validated": true,
+    "base_sha256": "5095996af0dadded533e157f6f6eafb6d796e943a5c39cf4fef370de2dfe65d7",
+    "baseline_test": {
+      "output": "F..F.....                                                                [100%]\n=================================== FAILURES ===================================\n__________________________ test_prices[10-1-None-10] ___________________________\n\nprice = 10, quantity = 1, discount = None, expected = 10\n\n    @pytest.mark.parametrize('price,quantity,discount,expected',[(10,1,None,10),(12.5,2,0,25),(10,2,.1,18),(0,1,None,0),(3.25,4,.2,10.4),(9,1,1,0)])\n    def test_prices(price,quantity,discount,expected):\n>       assert total(price,quantity,discount)==expected\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntest_pricing.py:7: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nprice = 10, quantity = 1, discount = None\n\n    def total(price: float, quantity: int, discount: float | None = 0) -> float:\n        if price < 0 or quantity < 1:\n            raise ValueError(\"invalid order\")\n>       return round(price * quantity * (1 - discount), 2)\n                                         ^^^^^^^^^^^^\nE       TypeError: unsupported operand type(s) for -: 'int' and 'NoneType'\n\npricing.py:6: TypeError\n___________________________ test_prices[0-1-None-0] ____________________________\n\nprice = 0, quantity = 1, discount = None, expected = 0\n\n    @pytest.mark.parametrize('price,quantity,discount,expected',[(10,1,None,10),(12.5,2,0,25),(10,2,.1,18),(0,1,None,0),(3.25,4,.2,10.4),(9,1,1,0)])\n    def test_prices(price,quantity,discount,expected):\n>       assert total(price,quantity,discount)==expected\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntest_pricing.py:7: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nprice = 0, quantity = 1, discount = None\n\n    def total(price: float, quantity: int, discount: float | None = 0) -> float:\n        if price < 0 or quantity < 1:\n            raise ValueError(\"invalid order\")\n>       return round(price * quantity * (1 - discount), 2)\n                                         ^^^^^^^^^^^^\nE       TypeError: unsupported operand type(s) for -: 'int' and 'NoneType'\n\npricing.py:6: TypeError\n=========================== short test summary info ============================\nFAILED test_pricing.py::test_prices[10-1-None-10] - TypeError: unsupported op...\nFAILED test_pricing.py::test_prices[0-1-None-0] - TypeError: unsupported oper...\n2 failed, 7 passed in 0.03s\n",
+      "exit_code": 1
+    },
+    "sandbox_scope": "pricing function + live inventory, not full six-service isolated clone",
+    "candidate_test": {
+      "output": ".........                                                                [100%]\n9 passed in 0.01s\n",
+      "exit_code": 0
+    },
+    "submitted_diff": "--- a/services/pricing.py\n+++ b/services/pricing.py\n@@ -3,4 +3,4 @@\n def total(price: float, quantity: int, discount: float | None = 0) -> float:\n     if price < 0 or quantity < 1:\n         raise ValueError(\"invalid order\")\n-    return round(price * quantity * (1 - discount), 2)\n+    return round(price * quantity * (1 - (discount or 0)), 2)",
+    "candidate_verified": true
+  },
+  "production_applied": false
+}

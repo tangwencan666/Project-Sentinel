@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.lock ./
+RUN pip install --no-cache-dir fastapi==0.115.12 uvicorn==0.34.2 -c requirements.lock
+COPY sentinel/__init__.py sentinel/public_demo.py sentinel/
+COPY portfolio portfolio
+COPY web/index.html web/favicon.svg web/portfolio.css web/portfolio.js web/replay.js web/documents.js web/
+COPY docs docs
+COPY README.md FINAL_STATUS.md ./
+RUN useradd -u 10001 -m sentinel
+USER 10001:10001
+ENV PUBLIC_DEMO_MODE=true PYTHONDONTWRITEBYTECODE=1
+EXPOSE 8000
+CMD ["uvicorn", "sentinel.public_demo:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"]

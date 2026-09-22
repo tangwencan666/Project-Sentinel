@@ -1,0 +1,115 @@
+{
+  "at": "2026-09-21T07:37:47.283909+00:00",
+  "results": [
+    {
+      "scenario": "healthy_checkout",
+      "passed": true,
+      "observed": {
+        "order_id": "8289b431-cb32-492d-962b-8b39e0714bb6",
+        "seconds": 0.06857920000038575
+      }
+    },
+    {
+      "scenario": "slow_query",
+      "passed": true,
+      "observed": {
+        "status": 200,
+        "seconds": 1.2264613999977882
+      }
+    },
+    {
+      "scenario": "pool_exhaustion",
+      "passed": true,
+      "observed": {
+        "statuses": [
+          502,
+          502,
+          502,
+          502,
+          502,
+          502,
+          502,
+          502
+        ]
+      }
+    },
+    {
+      "scenario": "n_plus_one",
+      "passed": true,
+      "observed": {
+        "sql_calls_delta": 41
+      }
+    },
+    {
+      "scenario": "cache_miss",
+      "passed": true,
+      "observed": {
+        "warm_sql": 0,
+        "cold_sql": 5,
+        "catalog_ttl": -2
+      }
+    },
+    {
+      "scenario": "consumer_lag",
+      "passed": true,
+      "observed": {
+        "offsets": [
+          {
+            "partition": 0,
+            "end_offset": 1194,
+            "committed_offset": 1182,
+            "lag": 12
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "downstream_timeout",
+      "passed": true,
+      "observed": {
+        "status": 502,
+        "seconds": 2.0267036000004737
+      }
+    },
+    {
+      "scenario": "retry_storm",
+      "passed": true,
+      "observed": {
+        "payment_503_calls_per_checkout": 5
+      }
+    },
+    {
+      "scenario": "code_exception",
+      "passed": true,
+      "observed": {
+        "error": "TypeError: unsupported operand type(s) for -: 'int' and 'NoneType'",
+        "trace_id": "386270974ef637396490cc0768cdbc22"
+      }
+    },
+    {
+      "scenario": "incident_detection",
+      "passed": true,
+      "observed": {
+        "id": "0eeb2bdd-6891-46b2-bbed-5a8bcf336cb2",
+        "status": "awaiting_model"
+      }
+    },
+    {
+      "scenario": "distributed_traces",
+      "passed": true,
+      "observed": {
+        "traces": 3,
+        "max_services": 6
+      }
+    },
+    {
+      "scenario": "prometheus",
+      "passed": true,
+      "observed": {
+        "series": 5
+      }
+    }
+  ],
+  "error": null,
+  "llm_verified": false
+}

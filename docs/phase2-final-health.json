@@ -1,0 +1,83 @@
+{
+  "recorded_at": "2026-09-21T09:13:03.708485+00:00",
+  "active_faults": [],
+  "traffic_enabled": true,
+  "provider_status": "available",
+  "containers": [
+    {
+      "Service": "gateway",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "inventory-service",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "jaeger",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "loadgen",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "notification-service",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "order-service",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "otel-collector",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "payment-service",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "postgres",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "prometheus",
+      "State": "running",
+      "Health": ""
+    },
+    {
+      "Service": "redis",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "redpanda",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "sentinel",
+      "State": "running",
+      "Health": "healthy"
+    },
+    {
+      "Service": "user-service",
+      "State": "running",
+      "Health": "healthy"
+    }
+  ],
+  "products": {
+    "status": 200,
+    "items": 40
+  },
+  "evaluation_lock": "0"
+}

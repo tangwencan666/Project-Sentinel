@@ -1,0 +1,11 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');
+const {ReplayClock}=require('../web/replay.js');
+const start='2026-09-22T02:31:51Z';
+const events=[{id:1,ts:'2026-09-22T02:31:52Z',stage:'TOOL'},{id:2,ts:'2026-09-22T02:31:54Z',stage:'ERROR'},{id:3,ts:'2026-09-22T02:31:56Z',stage:'ROOT CAUSE'}];
+test('initially paused with original ordered events',()=>{const c=new ReplayClock(events,start);assert.deepEqual(c.visible(),[]);assert.equal(c.playing,false)});
+test('1x advances by actual timestamp gaps',()=>{const c=new ReplayClock(events,start);c.play(0);c.tick(1000);assert.deepEqual(c.visible().map(e=>e.id),[1]);c.tick(2000);assert.equal(c.visible().length,1)});
+test('pause freezes cursor',()=>{const c=new ReplayClock(events,start);c.play(0);c.tick(1000);c.pause();c.tick(8000);assert.equal(c.elapsed,1)});
+test('2x and 4x accelerate without inventing events',()=>{for(const speed of [2,4]){const c=new ReplayClock(events,start);c.setSpeed(speed);c.play(0);c.tick(1000);assert.equal(c.elapsed,speed);assert.deepEqual(c.visible().map(e=>e.id),speed===2?[1]:[1,2])}});
+test('restart restores paused origin',()=>{const c=new ReplayClock(events,start);c.root();c.restart();assert.equal(c.elapsed,0);assert.equal(c.playing,false)});
+test('skip root selects real root timestamp',()=>{const c=new ReplayClock(events,start);assert.equal(c.root().id,3);assert.equal(c.elapsed,5);assert.equal(c.visible().at(-1).stage,'ROOT CAUSE')});
+test('end stops, unsupported speed rejected',()=>{const c=new ReplayClock(events,start);c.play(0);c.tick(100000);assert.equal(c.elapsed,5);assert.equal(c.playing,false);assert.throws(()=>c.setSpeed(8))});

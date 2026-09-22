@@ -1,0 +1,15 @@
+"""Operator/evaluator only. NEVER imported by investigator or included in tool results."""
+SCENARIOS = [
+    dict(scenario_id='slow_query', name='PostgreSQL 慢查询', affected_service='inventory-service', description='目录查询出现长尾延迟', ground_truth_root_cause='Inventory executes pg_sleep(1.2) before catalog SQL', expected_evidence=['pg_stat_activity wait_event=PgSleep','inventory latency >1s'], recovery_method='Remove injected database delay'),
+    dict(scenario_id='pool_exhaustion', name='连接池耗尽', affected_service='inventory-service', description='并发请求无法及时取得数据库连接', ground_truth_root_cause='Four concurrent long queries occupy all four inventory pool slots', expected_evidence=['PoolTimeout','four active inventory SQL sessions'], recovery_method='Release held connections'),
+    dict(scenario_id='n_plus_one', name='N+1 Query', affected_service='inventory-service', description='目录读取产生冗余查询', ground_truth_root_cause='One ID query followed by forty per-product SELECT statements', expected_evidence=['41 SQL calls per catalog request','repeated SELECT product by id'], recovery_method='Restore batch catalog query'),
+    dict(scenario_id='cache_miss', name='Redis 缓存失效', affected_service='inventory-service', description='缓存命中率下降、数据库调用增长', ground_truth_root_cause='Catalog reads bypass cache and invalidate catalog key', expected_evidence=['catalog TTL=-2','database calls per request increase'], recovery_method='Restore cache read/write'),
+    dict(scenario_id='consumer_lag', name='Kafka Consumer Lag', affected_service='notification-service', description='订单通知消费积压', ground_truth_root_cause='Notification consumer pauses processing and commits', expected_evidence=['end offsets grow','committed offsets stay fixed'], recovery_method='Resume consumer and drain backlog'),
+    dict(scenario_id='downstream_timeout', name='下游服务 Timeout', affected_service='payment-service', description='支付处理时间超过上游请求期限', ground_truth_root_cause='Payment delays 3 seconds while caller timeout is 2 seconds', expected_evidence=['payment span >3s','order ReadTimeout'], recovery_method='Remove payment delay'),
+    dict(scenario_id='retry_storm', name='Retry Storm', affected_service='order-service', description='失败调用被快速重试放大', ground_truth_root_cause='Five immediate retries per failed payment call without backoff', expected_evidence=['payment 503','payment requests / order requests approaches 5'], recovery_method='Restore one attempt and healthy payment'),
+    dict(scenario_id='code_exception', name='代码异常 HTTP 500', affected_service='order-service', description='订单金额计算发生运行时异常', ground_truth_root_cause='pricing.total subtracts None discount from integer', expected_evidence=['TypeError in order-service','pricing.py missing nullable discount handling'], recovery_method='Patch nullable discount handling, test and deploy'),
+]
+for scenario in SCENARIOS:
+    scenario['trigger']={'method':'POST','path':'/api/faults/'+scenario['scenario_id'],'body':{'duration_seconds':120}}
+    scenario['stop']={'method':'DELETE','path':'/api/faults/'+scenario['scenario_id']}
+REGISTRY = {s['scenario_id']: s for s in SCENARIOS}

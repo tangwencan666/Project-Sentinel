@@ -1,0 +1,105 @@
+name: project-sentinel
+x-app: &app
+  build: .
+  image: project-sentinel:local
+  restart: unless-stopped
+  init: true
+  environment: &env
+    DATABASE_URL: postgresql://sentinel:sentinel@postgres:5432/sentinel
+    REDIS_URL: redis://redis:6379/0
+    KAFKA_BOOTSTRAP: redpanda:9092
+    OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+  depends_on:
+    postgres: {condition: service_healthy}
+    redis: {condition: service_healthy}
+    redpanda: {condition: service_healthy}
+  healthcheck:
+    test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health',timeout=3)"]
+    interval: 10s
+    timeout: 5s
+    retries: 10
+  mem_limit: 384m
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel
+      POSTGRES_DB: sentinel
+    command: [postgres, -c, shared_preload_libraries=pg_stat_statements, -c, max_connections=150]
+    volumes: [pgdata:/var/lib/postgresql/data, ./infra/init.sql:/docker-entrypoint-initdb.d/init.sql:ro]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U sentinel]
+      interval: 3s
+      retries: 20
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      retries: 20
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v25.1.9
+    command: [redpanda, start, --smp, '1', --memory, 512M, --reserve-memory, 0M, --overprovisioned, --node-id, '0', --check=false, --kafka-addr, PLAINTEXT://0.0.0.0:9092, --advertise-kafka-addr, PLAINTEXT://redpanda:9092]
+    volumes: [kafkadata:/var/lib/redpanda/data]
+    healthcheck:
+      test: [CMD-SHELL, rpk cluster info --brokers localhost:9092]
+      interval: 5s
+      retries: 30
+  jaeger:
+    image: jaegertracing/all-in-one:1.68.0
+    command: ['--memory.max-traces=10000']
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+      GOMEMLIMIT: 640MiB
+    mem_limit: 768m
+    ports: ['127.0.0.1:16686:16686']
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.128.0
+    command: ['--config=/etc/otelcol/config.yaml']
+    volumes: [./infra/otel.yml:/etc/otelcol/config.yaml:ro]
+    depends_on: [jaeger]
+  prometheus:
+    image: prom/prometheus:v3.4.1
+    volumes: [./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro]
+    ports: ['127.0.0.1:19090:9090']
+  gateway:
+    <<: *app
+    environment: {<<: *env, SERVICE_NAME: gateway}
+    ports: ['127.0.0.1:18081:8000']
+  user-service:
+    <<: *app
+    environment: {<<: *env, SERVICE_NAME: user-service}
+  order-service:
+    <<: *app
+    environment: {<<: *env, SERVICE_NAME: order-service}
+  payment-service:
+    <<: *app
+    environment: {<<: *env, SERVICE_NAME: payment-service}
+  inventory-service:
+    <<: *app
+    environment: {<<: *env, SERVICE_NAME: inventory-service}
+  notification-service:
+    <<: *app
+    environment: {<<: *env, SERVICE_NAME: notification-service}
+  sentinel:
+    <<: *app
+    command: [uvicorn, sentinel.api:app, --host, 0.0.0.0, --port, '8000']
+    environment:
+      <<: *env
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://api.openai.com/v1}
+      LLM_MODEL: ${LLM_MODEL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      PUBLIC_DEMO_MODE: "false"
+      LIVE_AI_ENABLED: ${LIVE_AI_ENABLED:-false}
+    ports: ['127.0.0.1:${LIVE_PORT:-18083}:8000']
+    volumes: [agentwork:/work, ./.env:/run/sentinel/provider.env:ro, ./evaluation:/app/evaluation:ro, ./portfolio:/app/portfolio:ro, ./docs:/app/docs:ro, ./README.md:/app/README.md:ro, ./FINAL_STATUS.md:/app/FINAL_STATUS.md:ro]
+    mem_limit: 512m
+  loadgen:
+    <<: *app
+    command: [python, -m, services.loadgen]
+    healthcheck: {disable: true}
+volumes:
+  pgdata:
+  kafkadata:
+  agentwork:

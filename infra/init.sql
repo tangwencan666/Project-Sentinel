@@ -1,0 +1,17 @@
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+CREATE TABLE products (id int PRIMARY KEY, name text NOT NULL, price numeric NOT NULL, stock int NOT NULL);
+INSERT INTO products SELECT n, 'Product ' || n, 10 + n % 100, 1000000 FROM generate_series(1,1000) n;
+CREATE TABLE users (id int PRIMARY KEY, name text NOT NULL);
+INSERT INTO users VALUES (1, 'Demo customer');
+CREATE TABLE orders (id uuid PRIMARY KEY, user_id int NOT NULL, total numeric NOT NULL, created_at timestamptz DEFAULT now());
+CREATE TABLE payments (order_id uuid PRIMARY KEY, amount numeric NOT NULL, created_at timestamptz DEFAULT now());
+CREATE TABLE notifications (order_id uuid PRIMARY KEY, created_at timestamptz DEFAULT now());
+CREATE TABLE request_logs (id bigserial PRIMARY KEY, ts timestamptz DEFAULT now(), service text, path text, status int, duration_ms double precision, trace_id text, error text);
+CREATE INDEX ON request_logs (ts DESC);
+CREATE TABLE incidents (id uuid PRIMARY KEY, created_at timestamptz DEFAULT now(), status text NOT NULL, signal jsonb NOT NULL, report jsonb, baseline jsonb, verification jsonb);
+CREATE TABLE agent_steps (id bigserial PRIMARY KEY, incident_id uuid REFERENCES incidents(id), ts timestamptz DEFAULT now(), kind text, payload jsonb);
+CREATE USER investigator WITH PASSWORD 'local-investigator';
+GRANT CONNECT ON DATABASE sentinel TO investigator;
+GRANT USAGE ON SCHEMA public TO investigator;
+GRANT SELECT ON request_logs, products, users, orders, payments, notifications TO investigator;
+GRANT pg_read_all_stats TO investigator;

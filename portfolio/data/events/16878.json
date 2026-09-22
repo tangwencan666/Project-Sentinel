@@ -1,0 +1,1 @@
+{"id":16878,"incident_id":"886f2474-3eac-40fa-9368-e3fb829761bc","ts":"2026-09-22T02:32:23.221245+00:00","kind":"Tool Finished","payload":{"tool":"read_evidence","agent":"Investigator","run_id":"759044e6-c016-489b-a459-137ca4846462","evidence_ids":[],"tool_call_id":"1760c8ea-4a5f-4a1d-a12b-e289633e600f"}}

@@ -1,0 +1,8 @@
+--- a/services/pricing.py
++++ b/services/pricing.py
+@@ -3,4 +3,5 @@
+ def total(price: float, quantity: int, discount: float | None = 0) -> float:
+     if price < 0 or quantity < 1:
+         raise ValueError("invalid order")
++    discount = discount or 0
+     return round(price * quantity * (1 - discount), 2)

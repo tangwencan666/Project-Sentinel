@@ -1,0 +1,12 @@
+.git
+.env
+work
+__pycache__
+**/__pycache__
+.pytest_cache
+evaluation
+outputs
+artifacts
+node_modules
+.venv
+portfolio/.cache

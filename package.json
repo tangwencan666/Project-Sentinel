@@ -1,0 +1,11 @@
+{
+  "name": "project-sentinel-portfolio",
+  "private": true,
+  "version": "0.5.0",
+  "description": "Local browser and replay tests; the demo itself has no Node runtime dependency.",
+  "scripts": {
+    "test": "node --test tests/replay.test.cjs tests/documents.test.cjs",
+    "test:e2e": "node scripts/test_portfolio_browser.cjs"
+  },
+  "devDependencies": {"playwright": "1.62.1"}
+}

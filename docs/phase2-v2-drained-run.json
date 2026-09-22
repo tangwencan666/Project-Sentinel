@@ -1,0 +1,1005 @@
+{
+  "scenario": "cache_miss",
+  "ground_truth": "Catalog reads bypass cache and invalidate catalog key",
+  "expected_service": "inventory-service",
+  "mode": "AI",
+  "incident_id": "587e34b7-a900-4f0b-b5b0-e50aa9affaa2",
+  "run_id": "acc33fef-1d2b-48bd-b0f8-4efdff20b5da",
+  "run_status": "completed",
+  "diagnosis": {
+    "category": "N_PLUS_ONE",
+    "hypothesis": "inventory-service issues one `SELECT ... FROM products WHERE id=$1` per returned row (N+1), amplifying DB round-trips/connection churn against a small pool and causing pool queueing/errors.",
+    "root_cause": "inventory-service fetches product details with a per-row query (`SELECT id,name,price,stock FROM products WHERE id=$1`) executed once for every product returned: pg_stat_statements shows 56,920 calls producing 56,920 rows (exactly 1 call per row), versus only 1,683 calls for the batched `SELECT id,name,price,stock FROM products ORDER BY id LIMIT $1`. This N+1 amplification floods the DB with single-row round-trips, each acquiring a pool connection (runtime.query() acquires a connection per statement, pool max_size=4). The inventory pool-stats confirm the resulting saturation: requests_num=60,976 (matching the per-id plus batch calls), requests_queued=490, cumulative requests_wait_ms=294,308, usage_ms=1,027,898, and requests_errors=248 — the signature of many short queries contending for few connections. HTTP latency stayed low (~3ms, 0% error) only because the products table is small, so the amplification degrades pool/DB health rather than individual request latency.",
+    "evidence_ids": [
+      "E-d08c02695db84f15",
+      "E-765c47c7853244e2",
+      "E-fe5264e520694240",
+      "E-b7f6ea5c788a45dc"
+    ],
+    "code_locations": [
+      {
+        "path": "services/runtime.py",
+        "end_line": 38,
+        "start_line": 33
+      },
+      {
+        "path": "services/runtime.py",
+        "end_line": 24,
+        "start_line": 24
+      }
+    ],
+    "patch_decision": "NO_CODE_PATCH",
+    "recommended_fix": "Replace the per-product detail lookups in inventory-service with a single set-based query (fetch all products for the page in one statement, e.g. reuse the existing `SELECT id,name,price,stock FROM products ORDER BY id LIMIT $1` result or use `WHERE id = ANY($1)`), eliminating the N+1 loop. This reduces DB round-trips and pool connection churn. Not fixable within the allowlisted pricing.py scope, so no code patch is applied here; route the inventory-service handler change to the owner.",
+    "affected_service": "inventory-service",
+    "reasoning_summary": "Two independent evidence types converge. (1) DB statement stats (E-d08c02695db84f15): per-id products query 56,920 calls / 56,920 rows = 1 query per row vs 1,683 batched calls, the defining N+1 ratio. (2) inventory-service pool stats (E-765c47c7853244e2): requests_num 60,976 closely matches combined call count, with requests_queued=490, requests_wait_ms=294,308 and 248 errors indicating connection contention. runtime.py (E-b7f6ea5c788a45dc) shows query() takes a fresh pool connection per call with pool max_size=4, explaining how per-row queries saturate the pool. HTTP metrics (E-fe5264e520694240) show inventory db_qps ~7.8 tracking request throughput with 0% errors, so the impact is DB/pool amplification, not per-request errors. pg_sleep rows are not on the products path (unrelated calls_delta), so they are not the root cause.",
+    "remaining_uncertainty": [
+      "The inventory-service request handler source is not in the allowlisted files, so the exact loop issuing per-id queries could not be read directly; the N+1 is inferred from statement call/row counts and pool stats.",
+      "The 248 pool requests_errors are consistent with connection contention but the specific error code was not directly observed.",
+      "pg_sleep statements (mean ~2.0s/1.2s) exist in the DB but show unrelated deltas and were not tied to the products path; their origin/owner is unconfirmed."
+    ]
+  },
+  "critic": {
+    "verdict": "PARTIALLY_VERIFIED",
+    "evidence_ids": [
+      "E-d08c02695db84f15",
+      "E-765c47c7853244e2",
+      "E-fe5264e520694240",
+      "E-b7f6ea5c788a45dc"
+    ],
+    "regression_risks": [
+      "Recommended fix rewrites the inventory handler to a set-based/`= ANY($1)` query; this could change pagination/LIMIT semantics, row ordering, or returned stock/price data and alter API response shape used by gateway/order-service checkouts.",
+      "Batching large ID sets increases per-query execution time and payload size; if not bounded, it may raise p95 latency for inventory and shift load to order-service.",
+      "Absence of handler-level tests: only pricing_contract.py exists in scope (E-8ee378ef30fd495a); there is no test asserting the inventory product path, so a change would be unverifiable in this environment and regression-prone.",
+      "If pool max_size is later tuned concurrently, the fix and any pool-size change could interact, masking or amplifying each other; changes should be isolated.",
+      "No N+1 regression guard (e.g., assertion of 1 statement per request) is proposed, so the pattern can silently reappear."
+    ],
+    "test_sufficiency": "Insufficient. Evidence is observational and correlational: statement call/row ratios plus pool counters from two overlapping snapshots (before E-0148ae335d944862, after E-b545af3c326f4e07). The samples are short (20s windows) and pg_stat_statements is cumulative with per-id calls_delta=0 in the after window, so the headline counts are not proven to be generated in-window. No handler source for inventory-service was read (not allowlisted), no targeted experiment isolating the per-row loop was performed, and no post-fix measurement exists (patch_decision=NO_CODE_PATCH; patch=null). Therefore the diagnosis is supported as the leading hypothesis but not verified to the standard that a fix's tested scope would require.",
+    "verification_summary": "The defining N+1 signature is present in DB statement stats: `SELECT id,name,price,stock FROM products WHERE id=$1` shows 56,920 calls producing 56,920 rows (exactly 1 row/call), versus the set-based `... ORDER BY id LIMIT $1` at ~1,881 calls for 75,240 rows (~40 rows/call). The per-row query's mean exec time is far lower (0.037ms) than the batch (0.081ms), consistent with single-row lookups. Pool stats for inventory-service (requests_num ~61,180, requests_queued=490, requests_wait_ms=294,308, requests_errors=248, usage_ms~1.03M) do indicate sustained connection contention and some errors, and runtime.py confirms `query()` acquires a pool connection per statement with max_size=4. However, several causal links are asserted rather than proven: the exact loop issuing per-id queries was not read (handler not in allowlist); the 248 errors' specific code/trigger is unobserved; the two evidence types are correlational (both measured at overlapping windows) rather than a controlled A/B; and CPU/network/lock explanations for the pool contention are not excluded. The diagnosis is a plausible and well-supported strongest candidate, but not a closed proof.",
+    "alternative_explanations": [
+      "DB query volume from cumulative-window accumulation (pg_stat_statements is cumulative; deltas over the sampling window show calls_delta=0 for the per-id query while only the batch query moved), so the headline 56,920 figure may reflect historical load rather than the incident window.",
+      "Pg_sleep statements (344 calls @ ~2.0s, 321 calls @ ~1.2s) introduce multi-second DB occupancy; even though they sit on an unrelated path, they could indirectly contribute to pool/lock pressure and are not fully excluded as a competing contributor.",
+      "Inventory-service asynchronous/background or admin/`SELECT 1` health probing on the same pool (DB activity shows repeated `SELECT 1` for inventory-service) could inflate requests_num and requests_queued independently of the N+1 loop.",
+      "Connection churn rather than query count per se: a small pool with 40-row batches and competing services (order-service usage_ms~14.7K, payment ~15.6K) could saturate, meaning the pool contention is a shared-resource symptom, not necessarily driven solely by per-row selects.",
+      "The batch `ORDER BY id LIMIT $1` calls also grew (calls 1,881 -> 1,932; rows 75,240 -> 77,280) in the after snapshot while the per-id query showed zero delta, weakening the claim that the per-id loop was the active driver during the measured interval."
+    ]
+  },
+  "judgment": {
+    "root_cause_correct": false,
+    "evidence_quality": 2,
+    "explanation": "The ground truth is a cache_miss scenario: Catalog reads bypass the cache and the catalog key is invalidated, evidenced by catalog TTL=-2 and increased DB calls per request, with recovery by restoring cache read/write. The diagnosis instead claims an N+1 query pattern in inventory-service as the root cause, with pool saturation as the mechanism. While the diagnosis correctly identifies inventory-service and connects it to the products/catalog data path, the causal mechanism is materially wrong: the injected fault is a cache bypass/invalidation (cache_miss) affecting catalog reads, not a code-level N+1 per-row query amplification. The evidence shows catalog_ttl=-2 (key absent) in the Redis snapshot E-a58033c9f7c94a02, which is the cardinal signature of the true fault and directly supports the ground-truth mechanism. The diagnosis does cite independent evidence (DB statement stats, pool stats), so evidence quality is 2, but the mechanism is contradictory to the injected fault and must be rejected."
+  },
+  "service_correct": true,
+  "tool_calls": 36,
+  "duration_seconds": 70.400291,
+  "evidence_ids": [
+    "E-fe5264e520694240",
+    "E-765c47c7853244e2",
+    "E-17a0d49ee6f9405d",
+    "E-d08c02695db84f15",
+    "E-a58033c9f7c94a02",
+    "E-df3c2465e85c42ba",
+    "E-7fa3c558501344bc",
+    "E-6403f912d30740dc",
+    "E-e7ea7bb46fd14d19",
+    "E-7344fdc4ff3b414a",
+    "E-8ee378ef30fd495a",
+    "E-0c83645381614605",
+    "E-07e008bcc8844a91",
+    "E-b48dc47554d1495b",
+    "E-70f43e759f7d41b1",
+    "E-c83de07387df4cb4",
+    "E-b7f6ea5c788a45dc",
+    "E-0148ae335d944862",
+    "E-4535a968105b48ad",
+    "E-e4c4eb64e50543d7",
+    "E-0243aed64799490b",
+    "E-1ee699ed67a14ec7",
+    "E-b545af3c326f4e07",
+    "E-8caf8e44802540a0",
+    "E-8a2069439cad48c6",
+    "E-e64dd8599da74e84",
+    "E-f6b28e4691044198"
+  ],
+  "patch_generated": false,
+  "patch_applied": false,
+  "tests_passed": false,
+  "fault_replay_passed": false,
+  "patches": [],
+  "error": null,
+  "scoring": "model judge after investigation; human review recommended; failures remain in denominator",
+  "patch_requested": false,
+  "patch_generation_attempts": 0,
+  "measured_recovery": {
+    "after": {
+      "http": [
+        {
+          "avg_ms": "31.75",
+          "p50_ms": 35.79,
+          "p95_ms": 62.026999999999994,
+          "p99_ms": 87.26300000000005,
+          "service": "gateway",
+          "requests": 155,
+          "error_pct": "0.00",
+          "throughput_rps": 7.75
+        },
+        {
+          "avg_ms": "3.21",
+          "p50_ms": 2.65,
+          "p95_ms": 4.458499999999999,
+          "p99_ms": 7.064699999999998,
+          "service": "inventory-service",
+          "requests": 154,
+          "error_pct": "0.00",
+          "throughput_rps": 7.7
+        },
+        {
+          "avg_ms": "31.72",
+          "p50_ms": 29.91,
+          "p95_ms": 46.46049999999994,
+          "p99_ms": 70.65580000000003,
+          "service": "order-service",
+          "requests": 78,
+          "error_pct": "0.00",
+          "throughput_rps": 3.9
+        },
+        {
+          "avg_ms": "5.35",
+          "p50_ms": 5.12,
+          "p95_ms": 7.1240000000000006,
+          "p99_ms": 9.870399999999975,
+          "service": "payment-service",
+          "requests": 77,
+          "error_pct": "0.00",
+          "throughput_rps": 3.85
+        },
+        {
+          "avg_ms": "1.35",
+          "p50_ms": 1.19,
+          "p95_ms": 2.0740000000000003,
+          "p99_ms": 3.580399999999991,
+          "service": "user-service",
+          "requests": 77,
+          "error_pct": "0.00",
+          "throughput_rps": 3.85
+        }
+      ],
+      "redis": {
+        "note": "Redis stats are cumulative and include control-plane requests; compare snapshots.",
+        "catalog_ttl": 5,
+        "keyspace_hits": 51161,
+        "keyspace_misses": 274689
+      },
+      "source": "Measured",
+      "db_pool": [
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "gateway"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "gateway",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 38,
+                "pool_size": 1,
+                "requests_num": 274,
+                "connections_ms": 23,
+                "pool_available": 1,
+                "connections_num": 1,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "gateway"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "user-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "user-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 1786,
+                "pool_size": 2,
+                "requests_num": 7233,
+                "connections_ms": 50,
+                "pool_available": 2,
+                "connections_num": 3,
+                "requests_queued": 2,
+                "requests_wait_ms": 0,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "user-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "order-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "order-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 14788,
+                "pool_size": 3,
+                "requests_num": 6365,
+                "connections_ms": 48,
+                "pool_available": 3,
+                "connections_num": 3,
+                "requests_queued": 2,
+                "requests_wait_ms": 1,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "order-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "payment-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "payment-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 15649,
+                "pool_size": 2,
+                "requests_num": 6431,
+                "connections_ms": 44,
+                "pool_available": 2,
+                "connections_num": 3,
+                "requests_queued": 2,
+                "requests_wait_ms": 2,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "payment-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "inventory-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "inventory-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 1027948,
+                "pool_size": 4,
+                "requests_num": 61246,
+                "connections_ms": 63,
+                "pool_available": 4,
+                "connections_num": 4,
+                "requests_errors": 248,
+                "requests_queued": 490,
+                "requests_wait_ms": 294308,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "inventory-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "notification-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "notification-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 20330,
+                "pool_size": 1,
+                "requests_num": 6364,
+                "connections_ms": 33,
+                "pool_available": 1,
+                "connections_num": 2,
+                "requests_queued": 1,
+                "requests_wait_ms": 0,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "notification-service"
+            },
+            "http_status": 200
+          }
+        }
+      ],
+      "database": {
+        "source": "Measured",
+        "activity": [
+          {
+            "query": "INSERT INTO orders(id,user_id,total) VALUES($1,1,$2)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "order-service"
+          },
+          {
+            "query": "SELECT * FROM users WHERE id=1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "user-service"
+          },
+          {
+            "query": "SELECT 1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "SELECT 1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "gateway"
+          },
+          {
+            "query": "INSERT INTO payments(order_id,amount) VALUES($1,$2) ON CONFLICT DO NOTHING",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "payment-service"
+          },
+          {
+            "query": "INSERT INTO notifications(order_id) VALUES($1) ON CONFLICT DO NOTHING",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "notification-service"
+          },
+          {
+            "query": "SELECT status,payload FROM recovery_checks WHERE run_id=$1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          },
+          {
+            "query": "SELECT * FROM agent_steps WHERE incident_id=$1 AND id>$2 ORDER BY id LIMIT 100",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          },
+          {
+            "query": "SELECT 1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "INSERT INTO orders(id,user_id,total) VALUES($1,1,$2)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "order-service"
+          },
+          {
+            "query": "INSERT INTO payments(order_id,amount) VALUES($1,$2) ON CONFLICT DO NOTHING",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "payment-service"
+          },
+          {
+            "query": "SELECT 1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "SELECT 1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "SELECT * FROM agent_steps WHERE incident_id=$1 AND id>$2 ORDER BY id LIMIT 100",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          },
+          {
+            "query": "INSERT INTO orders(id,user_id,total) VALUES($1,1,$2)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "order-service"
+          },
+          {
+            "query": "SELECT * FROM users WHERE id=1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "user-service"
+          },
+          {
+            "query": "INSERT INTO agent_steps(incident_id,kind,payload) VALUES($1,$2,$3) RETURNING id",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          }
+        ],
+        "statements": [
+          {
+            "rows": 56920,
+            "calls": 1423,
+            "query": "SELECT id FROM products ORDER BY id LIMIT $1",
+            "mean_exec_time": 0.07385190864371051
+          },
+          {
+            "rows": 77280,
+            "calls": 1932,
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT $1",
+            "mean_exec_time": 0.08144332039337479
+          },
+          {
+            "rows": 56920,
+            "calls": 56920,
+            "query": "SELECT id,name,price,stock FROM products WHERE id=$1",
+            "mean_exec_time": 0.03729027362965548
+          },
+          {
+            "rows": 344,
+            "calls": 344,
+            "query": "SELECT pg_sleep($1)",
+            "mean_exec_time": 2001.7061116773248
+          },
+          {
+            "rows": 321,
+            "calls": 321,
+            "query": "SELECT pg_sleep($1)",
+            "mean_exec_time": 1201.9652883800622
+          }
+        ],
+        "call_deltas": [
+          {
+            "query": "SELECT id FROM products ORDER BY id LIMIT $1",
+            "calls_delta": 0
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT $1",
+            "calls_delta": 0
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products WHERE id=$1",
+            "calls_delta": 0
+          },
+          {
+            "query": "SELECT pg_sleep($1)",
+            "calls_delta": 23
+          },
+          {
+            "query": "SELECT pg_sleep($1)",
+            "calls_delta": 0
+          }
+        ],
+        "sample_seconds": 1
+      },
+      "kafka_lag": [
+        {
+          "lag": 0,
+          "partition": 0,
+          "end_offset": 13383,
+          "committed_offset": 13383
+        }
+      ],
+      "observed_at": "2026-09-21T08:38:56.567651+00:00",
+      "evidence_ids": [
+        "E-b545af3c326f4e07",
+        "E-8caf8e44802540a0",
+        "E-8a2069439cad48c6",
+        "E-e64dd8599da74e84",
+        "E-f6b28e4691044198"
+      ],
+      "window_seconds": 20
+    },
+    "before": {
+      "http": [
+        {
+          "avg_ms": "31.67",
+          "p50_ms": 29.845,
+          "p95_ms": 68.423,
+          "p99_ms": 82.4313,
+          "service": "gateway",
+          "requests": 154,
+          "error_pct": "0.00",
+          "throughput_rps": 7.7
+        },
+        {
+          "avg_ms": "3.81",
+          "p50_ms": 3.505,
+          "p95_ms": 6.0245,
+          "p99_ms": 7.9262,
+          "service": "inventory-service",
+          "requests": 154,
+          "error_pct": "0.00",
+          "throughput_rps": 7.7
+        },
+        {
+          "avg_ms": "32.06",
+          "p50_ms": 29.28,
+          "p95_ms": 47.008,
+          "p99_ms": 67.84439999999995,
+          "service": "order-service",
+          "requests": 77,
+          "error_pct": "0.00",
+          "throughput_rps": 3.85
+        },
+        {
+          "avg_ms": "5.37",
+          "p50_ms": 4.82,
+          "p95_ms": 7.576000000000002,
+          "p99_ms": 12.759999999999916,
+          "service": "payment-service",
+          "requests": 77,
+          "error_pct": "0.00",
+          "throughput_rps": 3.85
+        },
+        {
+          "avg_ms": "1.24",
+          "p50_ms": 1.15,
+          "p95_ms": 1.7580000000000005,
+          "p99_ms": 2.4467999999999996,
+          "service": "user-service",
+          "requests": 77,
+          "error_pct": "0.00",
+          "throughput_rps": 3.85
+        }
+      ],
+      "redis": {
+        "note": "Redis stats are cumulative and include control-plane requests; compare snapshots.",
+        "catalog_ttl": -2,
+        "keyspace_hits": 50775,
+        "keyspace_misses": 272317
+      },
+      "source": "Measured",
+      "db_pool": [
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "gateway"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "gateway",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 37,
+                "pool_size": 1,
+                "requests_num": 270,
+                "connections_ms": 23,
+                "pool_available": 1,
+                "connections_num": 1,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "gateway"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "user-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "user-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 1763,
+                "pool_size": 2,
+                "requests_num": 7106,
+                "connections_ms": 50,
+                "pool_available": 2,
+                "connections_num": 3,
+                "requests_queued": 2,
+                "requests_wait_ms": 0,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "user-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "order-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "order-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 14457,
+                "pool_size": 3,
+                "requests_num": 6238,
+                "connections_ms": 48,
+                "pool_available": 3,
+                "connections_num": 3,
+                "requests_queued": 2,
+                "requests_wait_ms": 1,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "order-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "payment-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "payment-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 15335,
+                "pool_size": 2,
+                "requests_num": 6304,
+                "connections_ms": 44,
+                "pool_available": 2,
+                "connections_num": 3,
+                "requests_queued": 2,
+                "requests_wait_ms": 2,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "payment-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "inventory-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "inventory-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 1027942,
+                "pool_size": 4,
+                "requests_num": 61180,
+                "connections_ms": 63,
+                "pool_available": 4,
+                "connections_num": 4,
+                "requests_errors": 248,
+                "requests_queued": 490,
+                "requests_wait_ms": 294308,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "inventory-service"
+            },
+            "http_status": 200
+          }
+        },
+        {
+          "health": {
+            "body": {
+              "status": "healthy",
+              "service": "notification-service"
+            },
+            "http_status": 200
+          },
+          "source": "Measured",
+          "service": "notification-service",
+          "pool-stats": {
+            "body": {
+              "pool": {
+                "pool_max": 4,
+                "pool_min": 1,
+                "usage_ms": 19840,
+                "pool_size": 1,
+                "requests_num": 6237,
+                "connections_ms": 33,
+                "pool_available": 1,
+                "connections_num": 2,
+                "requests_queued": 1,
+                "requests_wait_ms": 0,
+                "requests_waiting": 0
+              },
+              "source": "Measured",
+              "service": "notification-service"
+            },
+            "http_status": 200
+          }
+        }
+      ],
+      "database": {
+        "source": "Measured",
+        "activity": [
+          {
+            "query": "INSERT INTO orders(id,user_id,total) VALUES($1,1,$2)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "order-service"
+          },
+          {
+            "query": "SELECT * FROM users WHERE id=1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "user-service"
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT 40",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "SELECT 1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "gateway"
+          },
+          {
+            "query": "INSERT INTO payments(order_id,amount) VALUES($1,$2) ON CONFLICT DO NOTHING",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "payment-service"
+          },
+          {
+            "query": "INSERT INTO notifications(order_id) VALUES($1) ON CONFLICT DO NOTHING",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "notification-service"
+          },
+          {
+            "query": "INSERT INTO tool_calls(id,external_id,incident_id,run_id,agent,tool_name,arguments,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          },
+          {
+            "query": "SELECT * FROM agent_steps WHERE incident_id=$1 AND id>$2 ORDER BY id LIMIT 100",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT 40",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "INSERT INTO orders(id,user_id,total) VALUES($1,1,$2)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "order-service"
+          },
+          {
+            "query": "INSERT INTO payments(order_id,amount) VALUES($1,$2) ON CONFLICT DO NOTHING",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "payment-service"
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT 40",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT 40",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "inventory-service"
+          },
+          {
+            "query": "SELECT * FROM agent_steps WHERE incident_id=$1 AND id>$2 ORDER BY id LIMIT 100",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          },
+          {
+            "query": "INSERT INTO orders(id,user_id,total) VALUES($1,1,$2)",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "order-service"
+          },
+          {
+            "query": "SELECT * FROM users WHERE id=1",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "user-service"
+          },
+          {
+            "query": "INSERT INTO agent_steps(incident_id,kind,payload) VALUES($1,$2,$3) RETURNING id",
+            "state": "idle",
+            "wait_event": "ClientRead",
+            "wait_event_type": "Client",
+            "application_name": "sentinel"
+          }
+        ],
+        "statements": [
+          {
+            "rows": 56920,
+            "calls": 1423,
+            "query": "SELECT id FROM products ORDER BY id LIMIT $1",
+            "mean_exec_time": 0.07385190864371051
+          },
+          {
+            "rows": 75240,
+            "calls": 1881,
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT $1",
+            "mean_exec_time": 0.08126804625199373
+          },
+          {
+            "rows": 56920,
+            "calls": 56920,
+            "query": "SELECT id,name,price,stock FROM products WHERE id=$1",
+            "mean_exec_time": 0.03729027362965548
+          },
+          {
+            "rows": 344,
+            "calls": 344,
+            "query": "SELECT pg_sleep($1)",
+            "mean_exec_time": 2001.7061116773248
+          },
+          {
+            "rows": 321,
+            "calls": 321,
+            "query": "SELECT pg_sleep($1)",
+            "mean_exec_time": 1201.9652883800622
+          }
+        ],
+        "call_deltas": [
+          {
+            "query": "SELECT id FROM products ORDER BY id LIMIT $1",
+            "calls_delta": 0
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products ORDER BY id LIMIT $1",
+            "calls_delta": 10
+          },
+          {
+            "query": "SELECT id,name,price,stock FROM products WHERE id=$1",
+            "calls_delta": 0
+          },
+          {
+            "query": "SELECT pg_sleep($1)",
+            "calls_delta": 23
+          },
+          {
+            "query": "SELECT pg_sleep($1)",
+            "calls_delta": 0
+          }
+        ],
+        "sample_seconds": 1
+      },
+      "kafka_lag": [
+        {
+          "lag": 0,
+          "partition": 0,
+          "end_offset": 13260,
+          "committed_offset": 13260
+        }
+      ],
+      "observed_at": "2026-09-21T08:38:24.568414+00:00",
+      "evidence_ids": [
+        "E-0148ae335d944862",
+        "E-4535a968105b48ad",
+        "E-e4c4eb64e50543d7",
+        "E-0243aed64799490b",
+        "E-1ee699ed67a14ec7"
+      ],
+      "window_seconds": 20
+    },
+    "recovery_actor": "operator_experiment_runner",
+    "causality_limit": "Operator restoration is observational support; not an AI patch or proof of a unique mechanism.",
+    "not_an_ai_repair": true
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "sse_verified": true,
+  "mode": "AI",
+  "incident_id": "6985a274-76e4-474b-9090-75de0562aa14",
+  "starting_cursor": 1160,
+  "new_events": [
+    {
+      "id": 1161,
+      "kind": "Critic Output Rejected",
+      "agent": "Critic",
+      "ts": "2026-09-21 08:32:24.860801+00:00"
+    },
+    {
+      "id": 1162,
+      "kind": "Critic PARTIALLY_VERIFIED",
+      "agent": "Critic",
+      "ts": "2026-09-21 08:32:30.550858+00:00"
+    },
+    {
+      "id": 1163,
+      "kind": "Incident Report",
+      "agent": "Supervisor",
+      "ts": "2026-09-21 08:32:32.133104+00:00"
+    }
+  ],
+  "last_event_id_replay_verified": true
+}

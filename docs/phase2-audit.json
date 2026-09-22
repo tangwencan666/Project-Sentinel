@@ -1,0 +1,2082 @@
+{
+  "at": "2026-09-21T09:13:55.245656+00:00",
+  "files_checked": 80,
+  "keyword_hits": [
+    {
+      "file": "README.md",
+      "line": 15,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "infra/init.sql",
+      "line": 5,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": ".env.example",
+      "line": 14,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 1,
+      "keywords": [
+        "mock"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 34,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 49,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 53,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 54,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 55,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 56,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 57,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 60,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/verify_lab.py",
+      "line": 62,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "scripts/report_phase2.py",
+      "line": 84,
+      "keywords": [
+        "mock"
+      ]
+    },
+    {
+      "file": "scripts/audit_phase2.py",
+      "line": 10,
+      "keywords": [
+        "demo",
+        "fake",
+        "fixme",
+        "hardcoded",
+        "mock",
+        "sample",
+        "todo"
+      ]
+    },
+    {
+      "file": "docs/status.md",
+      "line": 26,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-v3-code-preflight.json",
+      "line": 61,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-v2-drained-run.json",
+      "line": 56,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-v2-drained-run.json",
+      "line": 537,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-v2-drained-run.json",
+      "line": 981,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 9177,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 10429,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 19442,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 20268,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 21006,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 21520,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 21994,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 23839,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 24314,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 24382,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 24435,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 24475,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 24975,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 25449,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 25503,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 26002,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 26476,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 35714,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 37052,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 37053,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 37056,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 38386,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 40745,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 41497,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 42026,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 42514,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 44539,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45028,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45098,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45099,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45102,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45154,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45155,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45158,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45216,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45217,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45220,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 45731,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 46219,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 46275,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 46276,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 46279,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 46789,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 47277,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 62584,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 65237,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 70686,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 71438,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 71964,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 72452,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 74368,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 74857,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 75546,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 76034,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 76605,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 77093,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 86160,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87365,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87397,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87402,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87408,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87620,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87621,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87623,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 87631,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 88976,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 91773,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 92525,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 93055,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 93543,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 94690,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 94722,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 94727,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 94756,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 94788,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 94793,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 95721,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96210,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96287,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96288,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96290,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96350,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96351,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96353,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96400,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96401,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96403,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96409,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96412,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96444,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96449,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 96923,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97411,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97474,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97475,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97477,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97482,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97485,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97517,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97522,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 97996,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 98484,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 106957,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 108465,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 109820,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 116590,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 117342,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 117875,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 118363,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 120657,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 121146,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 121231,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 121900,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 122388,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 122972,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 123460,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 131957,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 134775,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 141354,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 142106,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 142634,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 143122,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 145357,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 145846,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 146544,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 147032,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 147592,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 148080,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 161677,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 164700,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 175832,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 176563,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 177074,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 177541,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 180193,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 180661,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 181316,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 181783,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 182328,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 182795,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 189564,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-run-ledger.json",
+      "line": 192338,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation.json",
+      "line": 877,
+      "keywords": [
+        "demo",
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation.json",
+      "line": 884,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation.json",
+      "line": 2507,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation.json",
+      "line": 6704,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation.json",
+      "line": 7559,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation.json",
+      "line": 7562,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 887,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 1391,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 1865,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 3537,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 3538,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 3541,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 4057,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 4545,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 6736,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 7224,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 8839,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 8871,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 8876,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 8910,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 8911,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 8913,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 9430,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 9918,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 12127,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 12615,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 14802,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 15290,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 17467,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v3.json",
+      "line": 17934,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2.json",
+      "line": 3015,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2.json",
+      "line": 3461,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2.json",
+      "line": 5118,
+      "keywords": [
+        "demo",
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2.json",
+      "line": 5596,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2.json",
+      "line": 6040,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2-invalid-sql-identity.json",
+      "line": 3015,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2-invalid-sql-identity.json",
+      "line": 3461,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2-invalid-sql-identity.json",
+      "line": 5118,
+      "keywords": [
+        "demo",
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2-invalid-sql-identity.json",
+      "line": 5596,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-v2-invalid-sql-identity.json",
+      "line": 6040,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-pre-observer-fix.json",
+      "line": 877,
+      "keywords": [
+        "demo",
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-pre-observer-fix.json",
+      "line": 884,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-pre-observer-fix.json",
+      "line": 2507,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-pre-observer-fix.json",
+      "line": 6704,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-pre-observer-fix.json",
+      "line": 7559,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-evaluation-pre-observer-fix.json",
+      "line": 7562,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 1005,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 1509,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 1983,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 3655,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 3656,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 3659,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 4175,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 4663,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 6854,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 7342,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 8957,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 8989,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 8994,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 9028,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 9029,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 9031,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 9548,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 10036,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 12245,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 12733,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 14920,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 15408,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 17585,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 18052,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 20976,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 21450,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 21945,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 22433,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 22928,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 23416,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 23911,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 24399,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 24894,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 25382,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 25877,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 26365,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 26839,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/phase2-delivery.json",
+      "line": 27306,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/hostile-audit.md",
+      "line": 9,
+      "keywords": [
+        "demo",
+        "fake"
+      ]
+    },
+    {
+      "file": "docs/hostile-audit.md",
+      "line": 10,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/hostile-audit.md",
+      "line": 11,
+      "keywords": [
+        "mock",
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/hostile-audit.md",
+      "line": 12,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/hostile-audit.md",
+      "line": 13,
+      "keywords": [
+        "demo",
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/hostile-audit.md",
+      "line": 17,
+      "keywords": [
+        "fake",
+        "mock"
+      ]
+    },
+    {
+      "file": "docs/evaluation.md",
+      "line": 34,
+      "keywords": [
+        "mock"
+      ]
+    },
+    {
+      "file": "docs/demo-guide.md",
+      "line": 1,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/demo-guide.md",
+      "line": 6,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/demo-guide.md",
+      "line": 23,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 805,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 1293,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 3645,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 4134,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 4219,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 4888,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-kafka-failed-diagnosis-report.md",
+      "line": 5376,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 26,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 28,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 256,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 257,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 260,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 770,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 1258,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3341,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3830,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3900,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3901,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3904,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3956,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3957,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 3960,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 4018,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 4019,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 4022,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 4533,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-database-incident-report.md",
+      "line": 5021,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-call-incident-report.md",
+      "line": 778,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-call-incident-report.md",
+      "line": 1266,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-call-incident-report.md",
+      "line": 3559,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-call-incident-report.md",
+      "line": 4048,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-call-incident-report.md",
+      "line": 4746,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/ai-call-incident-report.md",
+      "line": 5234,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "docs/agent-design.md",
+      "line": 62,
+      "keywords": [
+        "sample"
+      ]
+    },
+    {
+      "file": "sentinel/api.py",
+      "line": 94,
+      "keywords": [
+        "demo"
+      ]
+    },
+    {
+      "file": "sentinel/tool_registry.py",
+      "line": 112,
+      "keywords": [
+        "sample"
+      ]
+    }
+  ],
+  "credential_value_never_printed": true,
+  "credential_scan": {
+    "configured": true,
+    "repository_files": [],
+    "database_rows_by_table": {
+      "incidents": 0,
+      "tool_calls": 0,
+      "evidence_items": 0,
+      "hypotheses": 0,
+      "agent_steps": 0,
+      "llm_calls": 0,
+      "ai_patches": 0,
+      "evaluations": 0,
+      "recovery_checks": 0
+    },
+    "sentinel_logs_match": false
+  },
+  "scope": "literal current provider secret; pattern/redaction behavior covered by tests; not a proof of all possible future leaks"
+}

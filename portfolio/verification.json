@@ -1,0 +1,919 @@
+{
+  "generated_at": "2026-09-22T07:22:43.797615+00:00",
+  "scope": "Local Phase 5 verification; no new live LLM benchmark. Summary, not raw logs.",
+  "backend": {
+    "passed": 267,
+    "existing": 189,
+    "new_portfolio": 78,
+    "warnings": 1,
+    "elapsed_seconds": 49.87,
+    "trace_regression_source": "Included genuine 90-span public recording, hash-verified; no archive-dependent skip."
+  },
+  "replay_unit_tests": {
+    "passed": 7
+  },
+  "frontend_unit_tests": {
+    "passed": 17,
+    "replay": 7,
+    "document_rendering_security": 10
+  },
+  "browser": {
+    "scope": "REAL_BROWSER_REAL_RECORDED_API",
+    "checks": [
+      {
+        "name": "dashboard renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "incident renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "replay renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "evidence renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "root-cause renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "patch renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "evaluation renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "architecture renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "documentation renders without overflow 1366",
+        "passed": true
+      },
+      {
+        "name": "dashboard renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "incident renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "replay renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "evidence renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "root-cause renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "patch renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "evaluation renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "architecture renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "documentation renders without overflow 1920",
+        "passed": true
+      },
+      {
+        "name": "dashboard renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "incident renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "replay renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "evidence renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "root-cause renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "patch renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "evaluation renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "architecture renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "documentation renders without overflow 390",
+        "passed": true
+      },
+      {
+        "name": "mode notice explains disabled live and provenance loads",
+        "passed": true
+      },
+      {
+        "name": "real replay play pause restart speeds root and event details",
+        "passed": true
+      },
+      {
+        "name": "evidence is lazy and every source filter works",
+        "passed": true
+      },
+      {
+        "name": "root evidence links and report download work",
+        "passed": true
+      },
+      {
+        "name": "candidate diff tests replay and disabled apply are truthful",
+        "passed": true
+      },
+      {
+        "name": "all 56 historical outcome buttons open genuine retained records",
+        "passed": true
+      },
+      {
+        "name": "all portfolio document links resolve",
+        "passed": true
+      },
+      {
+        "name": "document headings tables anchors and original download work",
+        "passed": true
+      },
+      {
+        "name": "interview document remains readable on narrow screen",
+        "passed": true
+      },
+      {
+        "name": "labelled frontend-only error loading and empty fixtures",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "resource_failures": [],
+    "mutations": [],
+    "performance": [
+      {
+        "page": "dashboard",
+        "ms": 215
+      },
+      {
+        "page": "incident",
+        "ms": 85
+      },
+      {
+        "page": "replay",
+        "ms": 80
+      },
+      {
+        "page": "evidence",
+        "ms": 98
+      },
+      {
+        "page": "root-cause",
+        "ms": 78
+      },
+      {
+        "page": "patch",
+        "ms": 81
+      },
+      {
+        "page": "evaluation",
+        "ms": 138
+      },
+      {
+        "page": "architecture",
+        "ms": 72
+      },
+      {
+        "page": "documentation",
+        "ms": 147
+      },
+      {
+        "page": "dashboard",
+        "ms": 136
+      },
+      {
+        "page": "incident",
+        "ms": 77
+      },
+      {
+        "page": "replay",
+        "ms": 76
+      },
+      {
+        "page": "evidence",
+        "ms": 74
+      },
+      {
+        "page": "root-cause",
+        "ms": 129
+      },
+      {
+        "page": "patch",
+        "ms": 140
+      },
+      {
+        "page": "evaluation",
+        "ms": 98
+      },
+      {
+        "page": "architecture",
+        "ms": 82
+      },
+      {
+        "page": "documentation",
+        "ms": 91
+      },
+      {
+        "page": "dashboard",
+        "ms": 97
+      },
+      {
+        "page": "incident",
+        "ms": 121
+      },
+      {
+        "page": "replay",
+        "ms": 122
+      },
+      {
+        "page": "evidence",
+        "ms": 136
+      },
+      {
+        "page": "root-cause",
+        "ms": 90
+      },
+      {
+        "page": "patch",
+        "ms": 83
+      },
+      {
+        "page": "evaluation",
+        "ms": 160
+      },
+      {
+        "page": "architecture",
+        "ms": 63
+      },
+      {
+        "page": "documentation",
+        "ms": 99
+      },
+      {
+        "page": "dashboard",
+        "ms": 73
+      },
+      {
+        "page": "replay",
+        "ms": 71
+      },
+      {
+        "page": "evidence",
+        "ms": 87
+      },
+      {
+        "page": "root-cause",
+        "ms": 69
+      },
+      {
+        "page": "patch",
+        "ms": 103
+      },
+      {
+        "page": "evaluation",
+        "ms": 156
+      },
+      {
+        "page": "documentation",
+        "ms": 104
+      },
+      {
+        "page": "documentation",
+        "ms": 86
+      },
+      {
+        "page": "dashboard",
+        "ms": 99
+      },
+      {
+        "page": "replay",
+        "ms": 73
+      },
+      {
+        "page": "evidence",
+        "ms": 83
+      },
+      {
+        "page": "root-cause",
+        "ms": 87
+      },
+      {
+        "page": "patch",
+        "ms": 73
+      },
+      {
+        "page": "evaluation",
+        "ms": 157
+      },
+      {
+        "page": "architecture",
+        "ms": 83
+      },
+      {
+        "page": "dashboard",
+        "ms": 80
+      }
+    ],
+    "screenshots": [
+      "docs/screenshots/dashboard.png",
+      "docs/screenshots/service-topology.png",
+      "docs/screenshots/investigation-replay.png",
+      "docs/screenshots/evidence.png",
+      "docs/screenshots/root-cause.png",
+      "docs/screenshots/ai-patch.png",
+      "docs/screenshots/evaluation.png",
+      "docs/screenshots/architecture.png"
+    ],
+    "passed": true
+  },
+  "local_live_readonly": {
+    "scope": "LOCAL_LIVE_UI_READ_ONLY_AI_DISABLED",
+    "errors": [],
+    "resource_failures": [],
+    "mutations": [],
+    "checks": [
+      "overview",
+      "incidents",
+      "faults",
+      "evidence",
+      "fault buttons disabled",
+      "recorded incident diagnostics / disabled retry / no generic apply"
+    ],
+    "passed": true
+  },
+  "public_security": {
+    "at": "2026-09-22T07:19:16.200275+00:00",
+    "http_checks": [
+      {
+        "action": "POST /api/faults/code_exception",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/incidents",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/incidents/00000000-0000-0000-0000-000000000001/deploy",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/provider/check",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/database/query",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/tools/shell",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/config",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/upload",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "POST /api/secrets",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/faults/code_exception",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/incidents",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/incidents/00000000-0000-0000-0000-000000000001/deploy",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/provider/check",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/database/query",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/tools/shell",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/config",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/upload",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PUT /api/secrets",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/faults/code_exception",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/incidents",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/incidents/00000000-0000-0000-0000-000000000001/deploy",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/provider/check",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/database/query",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/tools/shell",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/config",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/upload",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "PATCH /api/secrets",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/faults/code_exception",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/incidents",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/incidents/00000000-0000-0000-0000-000000000001/deploy",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/provider/check",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/database/query",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/tools/shell",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/config",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/upload",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "DELETE /api/secrets",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "GET /api/portfolio/demo",
+        "status": 200,
+        "passed": true
+      },
+      {
+        "action": "GET /api/portfolio/evaluation",
+        "status": 200,
+        "passed": true
+      },
+      {
+        "action": "GET /api/portfolio/patch",
+        "status": 200,
+        "passed": true
+      },
+      {
+        "action": "GET /api/portfolio/report",
+        "status": 200,
+        "passed": true
+      },
+      {
+        "action": "Live workspace unavailable",
+        "status": 403,
+        "passed": true
+      },
+      {
+        "action": "Host allowlist",
+        "status": 400,
+        "passed": true
+      }
+    ],
+    "container": {
+      "uid": 10001,
+      "filesystem_write_denied": true,
+      "forbidden_modules_absent": true,
+      "secret_environment_absent": true,
+      "provider_secret_file_absent": true,
+      "docker_socket_absent": true
+    },
+    "passed": true,
+    "scope": "Real public container boundary; no database/model capability or credentials. Local lab is a different service and was not attacked."
+  },
+  "clean_start": {
+    "source": "Git candidate tree, .env absent",
+    "health": {
+      "status": "healthy",
+      "mode": "PUBLIC_DEMO_READ_ONLY",
+      "database_connected": false,
+      "llm_enabled": false
+    },
+    "config": {
+      "default_mode": "RECORDED DEMO",
+      "public_demo": true,
+      "live_enabled": false,
+      "live_url": null,
+      "message": "Live AI investigation is disabled in the public demo. Run Sentinel locally to enable live investigation."
+    },
+    "recorded_run_id": "759044e6-c016-489b-a459-137ca4846462",
+    "passed": true,
+    "cleanup_exit_code": 0
+  },
+  "cost": {
+    "passed": true,
+    "remote_before": {
+      "unknown": {
+        "n": 493,
+        "latest": "2026-09-21 12:01:02.135647+00:00"
+      },
+      "api.deepseek.com": {
+        "n": 568,
+        "latest": "2026-09-22 02:38:19.633986+00:00"
+      }
+    },
+    "remote_after": {
+      "unknown": {
+        "n": 493,
+        "latest": "2026-09-21 12:01:02.135647+00:00"
+      },
+      "api.deepseek.com": {
+        "n": 568,
+        "latest": "2026-09-22 02:38:19.633986+00:00"
+      }
+    },
+    "local_protocol_fixtures_excluded": true,
+    "phase5_real_llm_calls": 0
+  },
+  "repository_audit": {
+    "at": "2026-09-22T07:22:43.720587+00:00",
+    "passed": true,
+    "files_and_archive_entries_scanned": 5267,
+    "archives_including_nested": 29,
+    "exact_configured_secret_matches": [],
+    "suspicious_token_pattern_files": [],
+    "unsafe_archive_entries": [],
+    "git_commit_count": 0,
+    "git_history_blobs_scanned": 0,
+    "github_candidate_count": 538,
+    "prohibited_git_candidates": [],
+    "oversized_git_candidates": [],
+    "personal_paths_in_public_text": [],
+    "broken_relative_links": [],
+    "frozen_integrity": {
+      "evaluation/results/v4.1-first-controlled.json": true,
+      "evaluation/results/v3.1-first-controlled.json": true,
+      "evaluation/results/v4-first-controlled.json": true,
+      "baseline/rule.json": true,
+      "baseline/v1-pure-llm.json": true,
+      "baseline/v2-hybrid.json": true,
+      "baseline/v3-context.json": true,
+      "baseline/manifest.json": true,
+      "baseline/archive.zip": true
+    },
+    "reviewed_lab_credentials": "compose.live.yaml / infra SQL contain explicitly local sentinel demo credentials; public image excludes these services and credentials. Not production secrets.",
+    "scope": "Literal configured secrets plus credential-shaped tokens across current files, nested archives and Git history. No claim to detect all encoded/semantic secrets. .env is intentionally local and Git-ignored."
+  },
+  "source_report_sha256": {
+    "backend-interview.json": "d57d25a2685653160159456667f9c9f199f0cc6eb371c62ef27fb29851bb46ca",
+    "frontend-interview.json": "3a2669ca09ecd14711c7c1a446a816a6bb6ff9badb7a03869f2fbf1282b4d96e",
+    "browser-interview-final.json": "d3e912697a74c254c1aa9652de9e7e2d1eb92d434e306b444a16c902538b480b",
+    "live-workspace-release.json": "3c35a3fcf0ac15dadbd515a66d8ae3e7b56eb305c35fd7ca2c9855913de9b29c",
+    "public-security-interview.json": "572781e3d3231ef5730d0966b5bc0cc596e3d0313e07ae4c3d1f5e3001ff28a7",
+    "clean-start-interview.json": "f803d955144db7e36da8b65d741a5755082564ff034365cb83ad9c78753fb42b",
+    "no-live-llm-interview.json": "62aa43ffcafcd3866289045bffc9f26b24d04603aae64070d1e22e935ff50fe4",
+    "repository-interview-prepackage.json": "bbef6757026979d81038f71e4f6aff396ab84faa2c3925429a002b7769cecdd0",
+    "offline-runtime.json": "97f9da44bd819889a7e844eb823572135f366c42f95b7f78a85f0355c501dd29",
+    "demo-dry-run.json": "3faebcaf8700d4343fd756e865f2bac576003fe51db52395c5216010c6b1eca2"
+  },
+  "measured_source_sha256": {
+    "sentinel/public_demo.py": "019c02692dba907b98f16181b3034ac67324290fa49a6a2b2886da167dfb4e59",
+    "sentinel/api.py": "52d831ea9ae1e0d2d7c8bcff49681a97d3c7999e2a5fb51bbb91469dbb4c3109",
+    "web/portfolio.js": "b75f76bc9828c9d05195597b53f47159fcf4261c63fa1e378156b634d30cc667",
+    "web/portfolio.css": "9e1eb4cbb5a1fd2f06f2b099dea13cb0e8527de6cdf41ba2887b7c994aef0e1d",
+    "web/replay.js": "679b9a4a41cb8bae5a0f35f860578f2f07cbfd820b634f99ade5a834f9848eb6",
+    "web/live.html": "ab88304c384adf6d754e448a473bbeb482a2f20065cba1f6de4d479ee40de218",
+    "web/documents.js": "42ee5e1fbbcf7750b71769eba2c19e688cbc3d15f83c233d9f80f0c9a7b3e9d9",
+    "web/index.html": "0453bafb6b1e20062162963a296629eb88d623c0f301117bf7f85c75870949fb",
+    "tests/test_runtime_followup.py": "9625e74d5bc4796954f95b05cf92f75868f3f3048cba257f26cd6743587316aa",
+    "Dockerfile.demo": "b71d08b1c12a3acc928453c80a7c094985aa43ba32724022b5b838e1b63a45da",
+    "compose.yaml": "e3a7398a472dde7a473935a4efa99043166039d013e1de88c16699aee86a8616",
+    "portfolio/data/manifest.json": "02d41944c965b5f70ea00109740d6a0407828b1789916e6fc2e66d64e32c14b3"
+  },
+  "offline_runtime": {
+    "started_at": "2026-09-22T07:19:13.403848+00:00",
+    "scope": "Prepared image runtime offline; first image build/download is outside this guarantee.",
+    "health": {
+      "status": "healthy",
+      "mode": "PUBLIC_DEMO_READ_ONLY",
+      "database_connected": false,
+      "llm_enabled": false
+    },
+    "checks": [
+      {
+        "path": "/",
+        "passed": true
+      },
+      {
+        "path": "/replay.html",
+        "passed": true
+      },
+      {
+        "path": "/evaluation.html",
+        "passed": true
+      },
+      {
+        "path": "/architecture.html",
+        "passed": true
+      },
+      {
+        "path": "/documentation.html",
+        "passed": true
+      },
+      {
+        "path": "/portfolio.js",
+        "passed": true
+      },
+      {
+        "path": "/documents.js",
+        "passed": true
+      },
+      {
+        "path": "/portfolio.css",
+        "passed": true
+      },
+      {
+        "path": "/replay.js",
+        "passed": true
+      },
+      {
+        "path": "/favicon.svg",
+        "passed": true
+      },
+      {
+        "path": "/docs/screenshots/dashboard.png",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/demo",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/evaluation",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/provenance",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/patch",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/docs?name=README.md",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/docs?name=FINAL_STATUS.md",
+        "passed": true
+      },
+      {
+        "path": "/api/portfolio/docs?name=docs/pitch-30s.md",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-576d943229754a5f",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-8b30d4f5e439433c",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-16f66380c793400e",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-13173d7155564494",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-e774bba5e45a4b92",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-a39444c16e1d4772",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-c52ba2fc872f442b",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-6c071565b95b460c",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-4e50aec4fe1f4e56",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-d6fa29ebbeaa48e6",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-e988600e9614429b",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-1895a680a0614dd9",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-7c1d2c61701245d6",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-2f857bf3603c4aea",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-f0ca1b81cb6b4411",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-08973224781c47cb",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-d2d1793e24674052",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-eebc6df880244abb",
+        "passed": true
+      },
+      {
+        "path": "evidence/E-4af523d22c2940b6",
+        "passed": true
+      }
+    ],
+    "no_key": true,
+    "no_env_file": true,
+    "run_id": "759044e6-c016-489b-a459-137ca4846462",
+    "passed": true,
+    "network_mode": "none",
+    "cleanup_exit_code": 0,
+    "finished_at": "2026-09-22T07:19:15.317302+00:00"
+  },
+  "interview_dry_run": {
+    "scope": "ACTUAL_FIVE_MINUTE_SCRIPT_BROWSER_ACTIONS_NO_NARRATION",
+    "started_at": "2026-09-22T07:19:03.482Z",
+    "steps": [
+      {
+        "name": "00:00 Dashboard positioning and recorded provenance",
+        "passed": true,
+        "action_ms": 145
+      },
+      {
+        "name": "00:30 Architecture and error recovery flow",
+        "passed": true,
+        "action_ms": 232
+      },
+      {
+        "name": "01:00 Complete replay then skip to root cause",
+        "passed": true,
+        "action_ms": 13862
+      },
+      {
+        "name": "02:30 Root citation logs and source evidence",
+        "passed": true,
+        "action_ms": 475
+      },
+      {
+        "name": "03:15 Actual candidate diff baseline and replay",
+        "passed": true,
+        "action_ms": 480
+      },
+      {
+        "name": "04:00 Retained retry storm error and sample size",
+        "passed": true,
+        "action_ms": 289
+      },
+      {
+        "name": "04:40 V3 and V3.1 failures remain prominent",
+        "passed": true,
+        "action_ms": 32
+      },
+      {
+        "name": "Documentation and local-only interview path",
+        "passed": true,
+        "action_ms": 549
+      }
+    ],
+    "errors": [],
+    "resource_failures": [],
+    "mutations": [],
+    "external_requests": [],
+    "passed": true,
+    "finished_at": "2026-09-22T07:19:20.483Z"
+  }
+}

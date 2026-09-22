@@ -1,0 +1,22 @@
+{
+  "sse_verified": true,
+  "incident_id": "bb63866e-f43f-4081-a059-e377ac70d471",
+  "starting_cursor": 321,
+  "new_events": [
+    {
+      "id": 322,
+      "kind": "Tool Finished",
+      "agent": "RuleBasedInvestigator"
+    },
+    {
+      "id": 323,
+      "kind": "Tool Started",
+      "agent": "RuleBasedInvestigator"
+    },
+    {
+      "id": 324,
+      "kind": "Evidence Added",
+      "agent": "RuleBasedInvestigator"
+    }
+  ]
+}
