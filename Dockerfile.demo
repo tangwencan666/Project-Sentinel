@@ -6,7 +6,7 @@ COPY sentinel/__init__.py sentinel/public_demo.py sentinel/
 COPY portfolio portfolio
 COPY web/index.html web/favicon.svg web/portfolio.css web/portfolio.js web/replay.js web/documents.js web/
 COPY docs docs
-COPY README.md FINAL_STATUS.md ./
+COPY README.md FINAL_STATUS.md CLAIMS_MATRIX.md ./
 RUN useradd -u 10001 -m sentinel
 USER 10001:10001
 ENV PUBLIC_DEMO_MODE=true PYTHONDONTWRITEBYTECODE=1

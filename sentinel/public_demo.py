@@ -72,9 +72,11 @@ def report():
 
 @router.get('/docs')
 def documentation(name: str = 'README.md'):
-    allowed={name:ROOT/name for name in ('README.md','FINAL_STATUS.md')}
+    allowed={name:ROOT/name for name in ('README.md','FINAL_STATUS.md','CLAIMS_MATRIX.md')}
     allowed.update({f'docs/{p.name}':p for p in (ROOT/'docs').glob('*.md')})
     if name not in allowed: raise HTTPException(404, 'Document unavailable')
+    if allowed[name].is_symlink() or not allowed[name].resolve().is_relative_to(ROOT.resolve()):
+        raise HTTPException(404, 'Document unavailable')
     return {'name':name,'content':allowed[name].read_text(encoding='utf-8')}
 
 @router.get('/verification')
@@ -99,7 +101,12 @@ def create_app():
     async def read_only(request, call_next):
         if request.method not in ('GET','HEAD'):
             response=JSONResponse({'detail':'PUBLIC_DEMO_READ_ONLY: Live AI, tools and all mutations are disabled.'},status_code=403)
-        elif request.url.path=='/live.html': response=PlainTextResponse(config()['message'],status_code=403)
+        # This demo needs complete files only. Reject before Starlette's affected
+        # Range parser (GHSA-7f5h-v6xp-fcq8); this is a mitigation, not an upgrade.
+        elif 'range' in request.headers:
+            response=PlainTextResponse('Byte-range requests are not supported.',status_code=416)
+        # Route security must use the ASGI path, not a URL rebuilt from Host.
+        elif request.scope['path']=='/live.html': response=PlainTextResponse(config()['message'],status_code=403)
         else: response=await call_next(request)
         response.headers['Content-Security-Policy']="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'"
         response.headers['X-Content-Type-Options']='nosniff'

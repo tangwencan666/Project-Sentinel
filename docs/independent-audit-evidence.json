@@ -1,0 +1,569 @@
+{
+  "audit_date": "2026-09-23",
+  "generated_at": "2026-09-23T01:30:13.343483+00:00",
+  "initial_commit": "0d3cc795f2bd127f03c54286927af0d46e5a9613",
+  "scope": "Independent local audit; no new paid benchmark; local fixes not pushed",
+  "real_llm_calls": 0,
+  "findings": {
+    "P0": 0,
+    "P1": 3,
+    "P2": 6,
+    "P3": 3
+  },
+  "fixed_boundaries": [
+    "Critic required/delivered citations",
+    "source and public-document symlinks",
+    "byte-range parser rejection",
+    "ASGI path gate",
+    "honest post-freeze disclosure and audit document links"
+  ],
+  "frozen_integrity": {
+    "frozen_files": 22,
+    "public_files": 283,
+    "all_unchanged": true,
+    "changed": []
+  },
+  "benchmark": {
+    "rule": {
+      "path": "evaluation/baselines/rule.json",
+      "sha256": "a192bcd8da805c8d76a3638b4c2ab4d162bde8aec74ae0ae0238c1b87bdb8f50",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 8,
+        "root_cause_correct": 7,
+        "service_correct": 8,
+        "workflow_tokens": 0,
+        "evaluator_tokens": 44476,
+        "workflow_calls": 0,
+        "missing_usage": 0
+      },
+      "selection_policy": null,
+      "cohort": null
+    },
+    "v1": {
+      "path": "evaluation/baselines/v1-pure-llm.json",
+      "sha256": "a3e17b51479821cfd0003cc46352380ac12ff9b26d18d6a650c1c6a09834fe33",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 8,
+        "root_cause_correct": 5,
+        "service_correct": 5,
+        "workflow_tokens": 1261196,
+        "evaluator_tokens": 111975,
+        "workflow_calls": 78,
+        "missing_usage": 0
+      },
+      "selection_policy": null,
+      "cohort": null
+    },
+    "v2": {
+      "path": "evaluation/baselines/v2-hybrid.json",
+      "sha256": "2e5d340215610fd9f9c25b37b620cadb87b6f9689ebe174e14b7f6aac8cfa311",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 8,
+        "root_cause_correct": 6,
+        "service_correct": 6,
+        "workflow_tokens": 1531642,
+        "evaluator_tokens": 140225,
+        "workflow_calls": 80,
+        "missing_usage": 0
+      },
+      "selection_policy": {
+        "rule": "First valid trial per scenario. Only demonstrably inactive pool injection is replaced; wrong answers in other scenes remain.",
+        "predeclared_in": "evaluation/pool-validity-investigation.json",
+        "proof": "evaluation/pool-fixture-proof.json",
+        "original_suite": "evaluation/results/v2-hybrid.json",
+        "supplement": "evaluation/results/v2-pool-revalidation.json",
+        "excluded_incident_id": "9aaeab70-193e-43a3-b687-55b2ec65edf4",
+        "original_pool_judgment": {
+          "root_cause_correct": false,
+          "evidence_quality": 0,
+          "explanation": "Investigation failed or produced no valid diagnosis."
+        },
+        "initial_root_correct": 5,
+        "initial_service_correct": 5
+      },
+      "cohort": null
+    },
+    "v3": {
+      "path": "evaluation/baselines/v3-context.json",
+      "sha256": "8058979445a1c070aeabdf978ae35546be044a981062227cdfdf22e73143b739",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 2,
+        "root_cause_correct": 1,
+        "service_correct": 1,
+        "workflow_tokens": 896380,
+        "evaluator_tokens": 40400,
+        "workflow_calls": 77,
+        "missing_usage": 0
+      },
+      "selection_policy": {
+        "rule": "First valid trial per scenario. Only demonstrably inactive pool injection is replaced; wrong answers in other scenes remain.",
+        "predeclared_in": "evaluation/pool-validity-investigation.json",
+        "proof": "evaluation/pool-fixture-proof.json",
+        "original_suite": "evaluation/results/v3-context-optimized.json",
+        "supplement": "evaluation/results/v3-pool-revalidation.json",
+        "excluded_incident_id": "18795b50-71c1-4656-841b-bbd7de58c319",
+        "original_pool_judgment": {
+          "root_cause_correct": false,
+          "evidence_quality": 1,
+          "explanation": "The ground truth root cause is connection pool exhaustion in inventory-service: four concurrent long queries occupy all four pool slots, producing PoolTimeout and four active inventory SQL sessions, recoverable by releasing held connections. The diagnosis instead concluded UNKNOWN, explicitly failing to establish any root cause, and its leading hypothesis (an inventory-service query-path/rate change / N+1 product lookups) contradicts the actual mechanism. Although the diagnosis noted the inventory-service db_qps anomaly, it dismissed/interpreted it as query-rate/statement inconsistency rather than recognizing held long-running queries saturating the pool; it did not identify pool slot occupancy, PoolTimeout, or all four sessions being held. The correct category and causal mechanism are absent, so the root cause is materially wrong. Evidence: the diagnosis cites some relevant service metrics (inventory db_qps, db activity snapshots) but did not capture pool-timeout or active-session evidence supporting exhaustion, so only one useful source class; no independent corroboration of the true mechanism."
+        },
+        "initial_root_correct": 1,
+        "initial_service_correct": 2
+      },
+      "cohort": null
+    },
+    "v3.1": {
+      "path": "evaluation/results/v3.1-first-controlled.json",
+      "sha256": "f8c2818edec2c1c521571a09c0193c4e1f50dfc96a5ea724057df09749c768cf",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 1,
+        "root_cause_correct": 1,
+        "service_correct": 1,
+        "workflow_tokens": 1122208,
+        "evaluator_tokens": 17229,
+        "workflow_calls": 68,
+        "missing_usage": 0
+      },
+      "selection_policy": null,
+      "cohort": "sentinel-benchmark-v1"
+    },
+    "v4": {
+      "path": "evaluation/results/v4-first-controlled.json",
+      "sha256": "454f2181cdb6a26111bc1b3c49e2259da5c76a1910dc1dc342a935d330658faa",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 7,
+        "root_cause_correct": 5,
+        "service_correct": 5,
+        "workflow_tokens": 1296540,
+        "evaluator_tokens": 113662,
+        "workflow_calls": 88,
+        "missing_usage": 0
+      },
+      "selection_policy": null,
+      "cohort": "sentinel-benchmark-v1"
+    },
+    "v4.1": {
+      "path": "evaluation/results/v4.1-first-controlled.json",
+      "sha256": "74b48f0cc7a3f341ca0a088a50054fa0c45209034d12aa4f5de46a4f1fa2c81a",
+      "scenarios": 8,
+      "scenario_set_matches": true,
+      "ground_truth_matches": true,
+      "counts": {
+        "workflow_completed": 8,
+        "root_cause_correct": 7,
+        "service_correct": 7,
+        "workflow_tokens": 1461870,
+        "evaluator_tokens": 131110,
+        "workflow_calls": 106,
+        "missing_usage": 0
+      },
+      "selection_policy": null,
+      "cohort": "sentinel-benchmark-v2"
+    }
+  },
+  "scoring_and_truth": {
+    "sentinel/scenarios.py": {
+      "same_between_cohorts": true,
+      "current_matches_frozen": true
+    },
+    "sentinel/evaluator.py": {
+      "same_between_cohorts": true,
+      "current_matches_frozen": true
+    }
+  },
+  "provenance": {
+    "run_id": "759044e6-c016-489b-a459-137ca4846462",
+    "incident_id": "886f2474-3eac-40fa-9368-e3fb829761bc",
+    "evidence_exact_sanitized_projection": true,
+    "events_exact_sanitized_projection": true,
+    "patch_and_tests_exact_sanitized_projection": true,
+    "model_source_matches": [
+      {
+        "call_id": "a61b69d5-965e-4d40-8bed-acd38c028220",
+        "model": "deepseek-chat",
+        "provider": "api.deepseek.com",
+        "tokens": 1226
+      }
+    ],
+    "events": 204,
+    "evidence": 19
+  },
+  "observational_truth_markers": [],
+  "critic_historical_omissions": [
+    {
+      "scenario": "pool_exhaustion",
+      "missing": [
+        "E-8574d1ad718f434c",
+        "E-89b0d82efabf4864",
+        "E-ab8a21e065184788"
+      ]
+    },
+    {
+      "scenario": "n_plus_one",
+      "missing": [
+        "E-4d88991f4dc849c9",
+        "E-52b925f2b4444894",
+        "E-58f263c597eb44ad",
+        "E-61ef0768d0834609",
+        "E-e775d7447b054c40",
+        "E-ec2509b06d5c4867",
+        "E-f210fb77106f4328"
+      ]
+    },
+    {
+      "scenario": "cache_miss",
+      "missing": [
+        "E-4105600b2b6c4a6f",
+        "E-424fbb23942c4bf4",
+        "E-4a0d40b6acf24c32",
+        "E-612b56c7197b46dc",
+        "E-94ce66aaf23248b7"
+      ]
+    },
+    {
+      "scenario": "consumer_lag",
+      "missing": [
+        "E-0143412824404fd7",
+        "E-35a55163d1eb4fb9",
+        "E-5376e468320648ff",
+        "E-805401edaee74672",
+        "E-85a5078149bc4f42",
+        "E-8759abd955f044b0"
+      ]
+    },
+    {
+      "scenario": "downstream_timeout",
+      "missing": [
+        "E-334a84b7f90940d0",
+        "E-4df8ddec973e4363",
+        "E-5890916f45bb47c4",
+        "E-784089429f234394"
+      ]
+    },
+    {
+      "scenario": "code_exception",
+      "missing": [
+        "E-1895a680a0614dd9",
+        "E-7c1d2c61701245d6",
+        "E-f0ca1b81cb6b4411"
+      ]
+    },
+    {
+      "scenario": "slow_query",
+      "missing": [
+        "E-259e2920229e43a8",
+        "E-42a2c057bad74683",
+        "E-8370724b632e4e31",
+        "E-b717a3b351a747c6"
+      ]
+    },
+    {
+      "scenario": "retry_storm",
+      "missing": [
+        "E-38d10b8ede804ec3",
+        "E-42d8d1d6f9d84d3f",
+        "E-f4a0bda85ed14b76"
+      ]
+    }
+  ],
+  "critic_offline_repack": [
+    {
+      "scenario": "pool_exhaustion",
+      "required": 6,
+      "all_delivered": true,
+      "chars": 13792
+    },
+    {
+      "scenario": "n_plus_one",
+      "required": 7,
+      "explicit_failure": "Required evidence exceeds the context budget; cannot silently omit citations"
+    },
+    {
+      "scenario": "cache_miss",
+      "required": 6,
+      "all_delivered": true,
+      "chars": 13614
+    },
+    {
+      "scenario": "consumer_lag",
+      "required": 6,
+      "all_delivered": true,
+      "chars": 13826
+    },
+    {
+      "scenario": "downstream_timeout",
+      "required": 6,
+      "all_delivered": true,
+      "chars": 13951
+    },
+    {
+      "scenario": "code_exception",
+      "required": 5,
+      "all_delivered": true,
+      "chars": 13767
+    },
+    {
+      "scenario": "slow_query",
+      "required": 5,
+      "explicit_failure": "Required evidence exceeds the context budget; cannot silently omit citations"
+    },
+    {
+      "scenario": "retry_storm",
+      "required": 6,
+      "all_delivered": true,
+      "chars": 13902
+    }
+  ],
+  "provider_ledger": {
+    "live_ai_enabled": "false",
+    "provider_before": {
+      "count": 568,
+      "latest": "2026-09-22 02:38:19.633986+00:00"
+    },
+    "provider_after": {
+      "count": 568,
+      "latest": "2026-09-22 02:38:19.633986+00:00"
+    }
+  },
+  "tests": {
+    "backend_baseline": {
+      "exit_code": 0,
+      "summary": [
+        "267 passed, 1 warning in 50.59s"
+      ]
+    },
+    "backend_post_boundary": {
+      "exit_code": 0,
+      "summary": [
+        "286 passed, 1 warning in 68.89s (0:01:08)"
+      ]
+    },
+    "backend_release": {
+      "exit_code": 0,
+      "summary": [
+        "287 passed, 1 warning in 73.10s (0:01:13)"
+      ]
+    },
+    "frontend": {
+      "exit_code": 0,
+      "summary": [
+        "\u2139 tests 17",
+        "\u2139 pass 17",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0"
+      ]
+    },
+    "browser": {
+      "passed": true,
+      "checks": 37
+    },
+    "browser_before_doc_update": {
+      "passed": true,
+      "checks": 37
+    },
+    "demo": {
+      "passed": true,
+      "checks": 8
+    },
+    "public_http": {
+      "passed": true,
+      "checks": 42
+    },
+    "offline": {
+      "passed": true,
+      "checks": 37
+    },
+    "audit_documents": {
+      "passed": true,
+      "checks": 5
+    },
+    "clean_start": {
+      "started_at": "2026-09-23T01:28:34.187728+00:00",
+      "source": "Git candidate tree, .env absent",
+      "live_llm_calls": 0,
+      "build_exit_code": 0,
+      "health": {
+        "status": "healthy",
+        "mode": "PUBLIC_DEMO_READ_ONLY",
+        "database_connected": false,
+        "llm_enabled": false
+      },
+      "config": {
+        "default_mode": "RECORDED DEMO",
+        "public_demo": true,
+        "live_enabled": false,
+        "live_url": null,
+        "message": "Live AI investigation is disabled in the public demo. Run Sentinel locally to enable live investigation."
+      },
+      "recorded_run_id": "759044e6-c016-489b-a459-137ca4846462",
+      "passed": true,
+      "cleanup_exit_code": 0,
+      "finished_at": "2026-09-23T01:28:52.804551+00:00"
+    },
+    "secret_and_links": {
+      "at": "2026-09-23T01:29:56.211591+00:00",
+      "passed": true,
+      "files_and_archive_entries_scanned": 6988,
+      "archives_including_nested": 31,
+      "exact_configured_secret_matches": [],
+      "suspicious_token_pattern_files": [],
+      "unsafe_archive_entries": [],
+      "git_commit_count": 1,
+      "git_history_blobs_scanned": 526,
+      "github_candidate_count": 542,
+      "prohibited_git_candidates": [],
+      "oversized_git_candidates": [],
+      "personal_paths_in_public_text": [],
+      "broken_relative_links": [],
+      "frozen_integrity": {
+        "evaluation/results/v4.1-first-controlled.json": true,
+        "evaluation/results/v3.1-first-controlled.json": true,
+        "evaluation/results/v4-first-controlled.json": true,
+        "baseline/rule.json": true,
+        "baseline/v1-pure-llm.json": true,
+        "baseline/v2-hybrid.json": true,
+        "baseline/v3-context.json": true,
+        "baseline/manifest.json": true,
+        "baseline/archive.zip": true
+      },
+      "reviewed_lab_credentials": "compose.live.yaml / infra SQL contain explicitly local sentinel demo credentials; public image excludes these services and credentials. Not production secrets.",
+      "scope": "Literal configured secrets plus credential-shaped tokens across current files, nested archives and Git history. No claim to detect all encoded/semantic secrets. .env is intentionally local and Git-ignored."
+    }
+  },
+  "local_evidence": {
+    "artifacts/independent/backend-baseline.json": {
+      "sha256": "c5dc45aa92da5e0302ad1c1654100ce3949174d421ede92c30d18b3110f68ebf",
+      "bytes": 1538
+    },
+    "artifacts/independent/backend-final.json": {
+      "sha256": "9c574185387c6e90015dc21f579966ebf68dbdd37840c90b87bcd288bb9d1092",
+      "bytes": 1548
+    },
+    "artifacts/independent/backend-release.json": {
+      "sha256": "bd40ee4e383d81007aab6871b083d26d35980b0b67f86c325b82ef4fa5317849",
+      "bytes": 1548
+    },
+    "artifacts/independent/frontend-final.json": {
+      "sha256": "9a41a75d4f574cc71e78e6f2403fb5180f0919b5bbad77158cdafd00d60a133f",
+      "bytes": 1462
+    },
+    "artifacts/independent/regressions-before.json": {
+      "sha256": "f05a9c57fc7fee5283cd4ebbe9bdc934cbcfed7e836e0dbee95e3af822301e8d",
+      "bytes": 6465
+    },
+    "artifacts/independent/regressions-after.json": {
+      "sha256": "a9a1b2e081836e0be264271bcf7bee2cc6fdeabf584528da4fcb581066026da5",
+      "bytes": 1215
+    },
+    "artifacts/independent/host-before.json": {
+      "sha256": "29156cf0e81d66af29bc462a1a27dc0c9497dc76c2d645a4c1bd26639df50912",
+      "bytes": 1213
+    },
+    "artifacts/independent/document-link-before.json": {
+      "sha256": "0734dc4664847e55ce6e8085cdf4b4ef22ae3382285b51c676bb3450e8ab5b69",
+      "bytes": 2428
+    },
+    "artifacts/independent/document-frontend-before.json": {
+      "sha256": "f710e58a3a232ce59e3a6ac4dd7e23f3a5bbc150c3f79b244947d6d2835074f4",
+      "bytes": 1953
+    },
+    "artifacts/independent/browser-final.json": {
+      "sha256": "1f4531b23a61c1331f138fe85eaedb37f7c8f4bc1432ce8b755e6d9dbde7d84a",
+      "bytes": 6492
+    },
+    "artifacts/independent/browser-release.json": {
+      "sha256": "0c5faf91a85d9ca879f4197645f5a8e86b3eb115e6609b7db7290954710dd492",
+      "bytes": 6642
+    },
+    "artifacts/independent/audit-doc-browser.json": {
+      "sha256": "5e2eaa5054d2837aa0a6fca7a35bdea4aca5de8515ed8791dec859184cd55341",
+      "bytes": 466
+    },
+    "artifacts/independent/accessibility-verified.json": {
+      "sha256": "72efb668532e2f60b8fdc60374bc7d3f8f64649afb8091177a890fc2374c323a",
+      "bytes": 2164
+    },
+    "artifacts/independent/offline-runtime.json": {
+      "sha256": "02a1c3bf96a39ca5018ddbaac6cf70afabfe9b7b728e5184fb8c9dd0be313790",
+      "bytes": 3494
+    },
+    "artifacts/independent/performance.json": {
+      "sha256": "ca3c2d19b13cce5effdd40eede429bcfe3352641e956524d4f1779479ffb9705",
+      "bytes": 2304
+    },
+    "artifacts/independent/critic-frozen-repack.json": {
+      "sha256": "483f8bc9cecbe96e450909443294508c669724e741f061f7f3d1d9073a949735",
+      "bytes": 1164
+    },
+    "artifacts/independent/lab-observations.json": {
+      "sha256": "43068e2b0e40d10e6a69a3b9194cb5c0060b9ddfff3de7bf1573dc740daea4ce",
+      "bytes": 317171
+    },
+    "artifacts/independent/dependencies.json": {
+      "sha256": "b80de0bdd217f3109d29b48fddf071cf4b4b8d783de68a2defaa4cc12aee3ae2",
+      "bytes": 11997
+    },
+    "artifacts/independent/npm-audit-official.json": {
+      "sha256": "bf3953ec17657f122d406ca194a733a7d88b60c1de4a4931a3509c68e7385704",
+      "bytes": 378
+    },
+    "artifacts/phase5/independent-final-public.json": {
+      "sha256": "6f998b79b0c9463514ab3941b411496a6b44e627245a0911446ed25534b44b96",
+      "bytes": 4918
+    },
+    "artifacts/phase5/independent-demo-final.json": {
+      "sha256": "d95e463d99c26b90b99e9891b7e367cb3e0bbb7d3eca3587d58f8146205bd693",
+      "bytes": 1256
+    },
+    "artifacts/phase5/independent-secrets-first.json": {
+      "sha256": "eb0b45d04611fd55c7a92c76f9f03e3ee5a206abfa715a0782916bd3ac8c5766",
+      "bytes": 1350
+    },
+    "artifacts/phase5/independent-secrets-final.json": {
+      "sha256": "865a10abc4d1a1f44d9faa52bdd7df130eb37a25fbc5715fdd40fa7db04b7b6e",
+      "bytes": 1350
+    },
+    "artifacts/phase5/clean-start-independent-audit.json": {
+      "sha256": "12ca10f373e3f9f19f5ddff333cdebfeb1ef276eed922e15b12fc819b03c53f9",
+      "bytes": 3812
+    }
+  },
+  "git_candidate": {
+    "count": 542,
+    "total_bytes": 33310389,
+    "size_buckets": {
+      "10MB": [],
+      "25MB": [],
+      "50MB": [],
+      "100MB": []
+    },
+    "license_present": false
+  },
+  "limitations": [
+    "Internal provenance and published hashes, not provider-signed attestation or tamper-proof storage.",
+    "Same-model post-hoc judge; no independent human regrading or paid rerun.",
+    "V2/V3 first VALID pool trial replaces an invalid injection; original failure retained. V4.1 uses changed benchmark-v2 source.",
+    "Current safety fixes are unbenchmarked; two historical mandatory Critic bundles explicitly overflow.",
+    "No complete OS-image CVE scan or production load test."
+  ]
+}

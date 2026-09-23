@@ -53,10 +53,14 @@ DEFINITIONS={
 }
 TOOLS=[{'type':'function','function':{'name':name,'description':desc,'parameters':schema.model_json_schema()}} for name,(schema,desc) in DEFINITIONS.items() if name!='validate_generic_patch']
 
-def read_source(path,start_line=1,end_line=160):
+def source_path(path):
     if path not in SOURCE_FILES: raise ValueError('source path not allowlisted')
     file=ROOT/path
     if file.is_symlink() or not file.resolve().is_relative_to(ROOT.resolve()): raise ValueError('source traversal rejected')
+    return file
+
+def read_source(path,start_line=1,end_line=160):
+    file=source_path(path)
     lines=file.read_text().splitlines();end=min(end_line,len(lines))
     if start_line>end: raise ValueError('empty source range')
     return {'path':path,'start_line':start_line,'end_line':end,'source':'\n'.join(f'{n}: {lines[n-1]}' for n in range(start_line,end+1))}
@@ -142,7 +146,7 @@ async def invoke(name,args,incident_id,run_id):
     if name=='search_repository':
         matches=[]
         for path in sorted(SOURCE_FILES):
-            for line,text in enumerate((ROOT/path).read_text().splitlines(),1):
+            for line,text in enumerate(source_path(path).read_text().splitlines(),1):
                 if args['text'].lower() in text.lower(): matches.append({'path':path,'line':line,'text':text})
         return {'matches':matches[:40],'search_scope':sorted(SOURCE_FILES)}
     if name=='read_source_file': return read_source(**args)

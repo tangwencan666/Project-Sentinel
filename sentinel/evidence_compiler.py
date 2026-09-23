@@ -182,12 +182,15 @@ def compile_observation(kind,payload,max_chars=2800):
     return result
 
 
-def compile_pack(evidence, max_chars=14000, services=(), pinned_ids=()):
+def compile_pack(evidence, max_chars=14000, services=(), pinned_ids=(), required_ids=()):
+    required_ids=set(required_ids)
+    if required_ids-{e['id'] for e in evidence}:
+        raise ValueError('Required evidence is unavailable in this investigation')
     candidates = []; families = Counter(SOURCE_KIND.get(e['kind'],e['kind']) for e in evidence)
     raw_size = sum(size(e['payload']) for e in evidence)
     for index, e in enumerate(evidence):
         # Control data already has dedicated fields in InvestigationState.
-        if e['kind'] in ('run_deterministic_triage','get_service_topology','submit_root_cause_decision','validate_patch','run_tests'): continue
+        if e['id'] not in required_ids and e['kind'] in ('run_deterministic_triage','get_service_topology','submit_root_cause_decision','validate_patch','run_tests'): continue
         family = SOURCE_KIND.get(e['kind'],e['kind'])
         observation = compile_observation(e['kind'],e['payload'])
         text = json.dumps(observation,ensure_ascii=False,default=str)
@@ -205,16 +208,22 @@ def compile_pack(evidence, max_chars=14000, services=(), pinned_ids=()):
         candidates.append((item,family))
     candidates.sort(key=lambda c:(c[0]['id'] in pinned_ids,c[0]['importance_score']), reverse=True)
     selected = []; omitted = []; seen = set(); counts = Counter(); chosen = set()
-    def add(item,family):
+    def add(item,family,required=False):
         identity = (item['kind'],json.dumps(item['observations'],sort_keys=True,default=str))
-        if identity in seen:
+        if identity in seen and not required:
             omitted.append({'id':item['id'],'reason':'duplicate_complete_observation'}); return False
         if size(selected+[item])>max_chars:
+            if required: raise ValueError('Required evidence exceeds the context budget; cannot silently omit citations')
             omitted.append({'id':item['id'],'reason':'whole_object_exceeds_remaining_budget'}); return False
         selected.append(item); seen.add(identity); counts[family]+=1; chosen.add(item['id']); return True
-    # One per source family before admitting repeats: diversity is not an afterthought.
-    visited = set()
+    # Root-cited observations are a contract, not a ranking preference. Retain
+    # distinct IDs even when payloads duplicate; fail closed when they cannot fit.
     for item,family in candidates:
+        if item['id'] in required_ids: add(item,family,required=True)
+    # One per source family before admitting optional repeats.
+    visited = set(counts)
+    for item,family in candidates:
+        if item['id'] in chosen: continue
         if family not in visited:
             if add(item,family): visited.add(family)
     considered = {x['id'] for x in omitted}|chosen

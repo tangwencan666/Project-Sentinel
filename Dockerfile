@@ -6,6 +6,7 @@ COPY services services
 COPY sentinel sentinel
 COPY tests tests
 COPY web web
+COPY CLAIMS_MATRIX.md ./
 RUN useradd -m sentinel && mkdir /work && chown sentinel /work
 USER sentinel
 CMD ["uvicorn", "services.app:app", "--host", "0.0.0.0", "--port", "8000"]

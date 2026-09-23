@@ -2,6 +2,8 @@
 
 **AI-Powered Production Incident Investigation & Remediation Platform.**
 
+**Independent audit follow-up (2026-09-23):** [Final audit](docs/independent-final-audit.md) and [Claims Matrix](CLAIMS_MATRIX.md). The historical Phase 5 results below are retained. Current local regression gate is 287 backend + 17 frontend tests, 37 browser checks and 42 Public HTTP checks. Benchmark performed on frozen V4.1 build; post-freeze safety fixes have not been rebenchmarked. All eight frozen Critic inputs omitted some root-cited evidence; current required-citation checks fail explicitly if the mandatory bundle exceeds budget.
+
 ## What works
 
 Six local commerce microservices with PostgreSQL, Redis, Kafka-compatible Redpanda
@@ -46,7 +48,7 @@ accuracy. Retry storm remains incorrect. No paid benchmark was rerun for this de
 
 ## Tests
 
-V4.1 benchmark-time gate: **189 passed**. Current regression suite: **267 backend +
+V4.1 benchmark-time gate: **189 passed**. Archived Phase 5 release gate: **267 backend +
 17 frontend passed**. Public browser suite: **37 checks**; public security audit:
 **42 HTTP checks** plus container assertions. These counts are different kinds of
 verification, not additive benchmark samples. One third-party test deprecation warning

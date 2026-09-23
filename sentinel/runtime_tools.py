@@ -55,7 +55,7 @@ def tools_for(names,state=None):
 def symbol_candidates(symbol):
     rows=[]
     for path in sorted(registry.SOURCE_FILES):
-        for node in ast.walk(ast.parse((registry.ROOT/path).read_text())):
+        for node in ast.walk(ast.parse(registry.source_path(path).read_text())):
             if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)):
                 rows.append({'path':path,'symbol':node.name,'start_line':node.lineno,'end_line':node.end_lineno})
     return sorted(rows,key=lambda x:difflib.SequenceMatcher(None,symbol,x['symbol']).ratio(),reverse=True)[:6]

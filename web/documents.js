@@ -8,7 +8,7 @@ function destination(value,name,image=false){
  if(url.origin!=='https://sentinel.invalid')return !image&&['http:','https:'].includes(url.protocol)&&!url.username&&!url.password?url.href:null;
  if(image)return /^\/docs\/screenshots\/[a-z0-9-]+\.png$/.test(url.pathname)?url.pathname:null;
  if(value.startsWith('#'))return url.hash;
- if(['/README.md','/FINAL_STATUS.md'].includes(url.pathname)||/^\/docs\/[a-z0-9-]+\.md$/.test(url.pathname))return '/documentation.html?doc='+encodeURIComponent(url.pathname.slice(1))+url.hash;
+ if(['/README.md','/FINAL_STATUS.md','/CLAIMS_MATRIX.md'].includes(url.pathname)||/^\/docs\/[a-z0-9-]+\.md$/.test(url.pathname))return '/documentation.html?doc='+encodeURIComponent(url.pathname.slice(1))+url.hash;
  if(url.pathname==='/portfolio/verification.json')return '/api/portfolio/verification';
  return null;
 }

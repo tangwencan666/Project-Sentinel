@@ -106,6 +106,8 @@ app.add_middleware(TrustedHostMiddleware,allowed_hosts=['localhost','127.0.0.1',
 
 @app.middleware('http')
 async def protect_mutations(request: Request,call_next):
+    if 'range' in request.headers:
+        return PlainTextResponse('Byte-range requests are not supported.',status_code=416)
     if not LIVE_ENABLED and request.method not in ('GET','HEAD','OPTIONS'):
         from fastapi.responses import JSONResponse
         return JSONResponse({'detail':'Live AI is disabled. Enable LIVE_AI_ENABLED=true locally to use controls.'},status_code=403)

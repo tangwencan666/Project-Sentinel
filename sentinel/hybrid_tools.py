@@ -50,8 +50,7 @@ class Context(Strict):
 
 
 def code_symbol(path,symbol):
-    if path not in registry.SOURCE_FILES: raise ValueError('source path not allowlisted')
-    tree=ast.parse((registry.ROOT/path).read_text())
+    tree=ast.parse(registry.source_path(path).read_text())
     for node in ast.walk(tree):
         if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef)) and node.name==symbol:
             return registry.read_source(path,node.lineno,min(node.end_lineno,node.lineno+79))

@@ -10,7 +10,9 @@ AI 驱动的微服务生产事故调查与自动修复平台。Production-orient
 
 **Frozen V4.1:** 8 fault scenarios · **8/8 workflow completion** · **7/8 (87.5%) root cause accuracy** · Model: **deepseek-chat**. Eight controlled cases, not a production accuracy estimate.
 
-**Tests:** V4.1 benchmark-time gate **189 passed**; current regression suite **267 backend + 17 frontend passed**. Browser and HTTP security checks are reported separately.
+**Tests:** V4.1 benchmark-time gate **189 passed**; independent audit regression suite **287 backend + 17 frontend passed**, plus **37 browser checks and 42 Public HTTP checks**. These are separate test suites, not 287 live-model cases.
+
+**Benchmark performed on frozen V4.1 build.** Current audit fixes are unbenchmarked. The Critic evidence guard now retains mandatory citations or fails explicitly; offline historical repacking fits six cases and exceeds the original context budget in two. See the [independent final audit](docs/independent-final-audit.md) and [Claims Matrix](CLAIMS_MATRIX.md).
 
 **Explore:** [Recorded Demo](#recorded-demo) · [Architecture](docs/architecture.md) · [Evaluation](docs/phase4-evaluation.md) · [Quick Start](#quick-start).
 
@@ -85,7 +87,7 @@ V4.1 is not a single-variable compression ablation: runtime and readable busines
 
 V3 context optimization caused workflow completion to collapse. Context reconstruction lost correction feedback; structured output recovery was insufficient; convergence removed evidence tools too early; budget accounting and telemetry pressure exposed more failures. V3.1's first intervention also failed. Separate qualification reached 5/5 before V4, but never replaced first results.
 
-Explicit state, pinned errors, read tracking, separate budgets, bounded repair and measured telemetry improved the final workflow result. They did not solve everything: Critic still omitted root-cited evidence in one final case, and the readable fault helper reveals experiment implementation. Historical failures are retained, not hidden or rescored.
+Explicit state, pinned errors, read tracking, separate budgets, bounded repair and measured telemetry improved the final workflow result. Independent inspection found that frozen Critic inputs omitted some root-cited evidence in all eight cases, and the readable fault helper reveals experiment implementation. The post-freeze guard rejects silent omission and undelivered citations; current workflow completion has not been rebenchmarked. Historical failures are retained, not hidden or rescored.
 
 ## AI Patch
 
@@ -138,10 +140,12 @@ Open http://localhost:18083/live.html. With the default false, controls, detecto
 
 `PUBLIC_DEMO_MODE=true` runs a separate no-DB/no-provider server. All mutations are rejected. The minimal image has no secret mounts, tool dispatcher, live agent, database driver or Docker socket; it is non-root and filesystem read-only. Logs, traces and source are rendered as escaped untrusted text. [Public deployment and limits](docs/deployment-public-demo.md).
 
+The audit fixed inconsistent symlink checks and the public page path gate, and rejects byte-range requests before the pinned Starlette Range parser. Dependency advisory debt remains; this is not a claim that every dependency or Docker image is vulnerability-free. See the [security assessment](docs/independent-final-audit.md#security).
+
 ## Limitations
 
 - Eight controlled scenarios, one formal first dispatch each; no statistical generalization or production SLO claim.
-- Critic citation handoff defect and experiment-helper visibility remain open in frozen V4.1.
+- Frozen V4.1 retains the Critic handoff defect. Current code has a required-citation guard; oversized mandatory evidence bundles fail explicitly. No new 8/8 result is claimed. Experiment-helper visibility remains.
 - Four constrained patch profiles, shared sandbox kernel, no arbitrary-repository remediation or live generic Apply.
 - No live multi-tenant RBAC or distributed execution leases; no end-to-end exactly-once billing.
 - Public Demo displays history, not a continuously operating commerce deployment. No public domain has been purchased or deployed.
@@ -164,7 +168,7 @@ Browser tests use installed Edge on Windows, Playwright Chromium elsewhere; set
 `PLAYWRIGHT_CHANNEL` if needed. `SENTINEL_DEMO_URL` changes the recorded demo URL.
 Use new result names: audit/test scripts preserve prior evidence. The public demo
 needs no Node dependency; Node/Playwright are development test tools only.
-The 267-pass backend gate now uses the included genuine `portfolio/data/` recording
+The backend gate uses the included genuine `portfolio/data/` recording
 for the historical 90-span trace regression; internal experiment archives are no
 longer required by that test. Frontend verification adds 17 local tests: seven replay
 tests and ten document-rendering/security tests. The document reader supports section

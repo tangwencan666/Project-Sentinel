@@ -1,5 +1,7 @@
 # Phase 5 adversarial audit
 
+Historical Phase 5 report. The [independent final audit](independent-final-audit.md) supersedes its Critic omission scope: retained telemetry shows missing root citations in all eight frozen inputs, not only the example identified here. Post-freeze guard changes and current test results are documented separately; the original findings below are preserved.
+
 Project Sentinel — AI-Powered Production Incident Investigation & Remediation Platform.
 
 Audit scope: portfolio presentation, actual startup, recorded artifact fidelity,
