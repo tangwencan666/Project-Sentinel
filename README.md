@@ -1,203 +1,99 @@
 # Project Sentinel
 
-**AI-Powered Production Incident Investigation & Remediation Platform**
+面向微服务故障排查的 AI Agent 实验与求职展示项目。Agent 读取日志、指标、Trace 与源码，通过工具和证据引用形成根因判断，再对受限候选补丁进行沙箱验证。
 
-Sentinel detects microservice incidents, lets an AI agent investigate real logs, metrics, traces and source code, identifies evidence-backed root causes, and validates candidate fixes in a sandbox.
+**默认演示为 RECORDED DEMO：真实历史运行的只读回放。** 它不代表持续运行的生产系统。Live Lab 需要单独启用；候选补丁不会自动部署。
 
-AI 驱动的微服务生产事故调查与自动修复平台。Production-oriented engineering portfolio; **not production ready**.
+## 1. 项目简介
 
-**Incident → Tool Calling → Evidence → Root Cause → Candidate Patch → Sandbox Validation.**
+项目用八类受控故障比较规则、LLM 与 Hybrid 调查流程，保留失败实验、恢复过程和证据限制。重点展示 Agent 状态、工具权限、证据交接、恢复与验证，而非只展示一段模型回答。
 
-**Frozen V4.1:** 8 fault scenarios · **8/8 workflow completion** · **7/8 (87.5%) root cause accuracy** · Model: **deepseek-chat**. Eight controlled cases, not a production accuracy estimate.
+冻结 V4.1 的八个场景完成 8/8、根因正确 7/8，仅是小规模受控实验。当前引用保护修复尚未重跑完整付费 Benchmark，不能将历史成绩赋给当前代码。
 
-**Tests:** V4.1 benchmark-time gate **189 passed**; independent audit regression suite **287 backend + 17 frontend passed**, plus **37 browser checks and 42 Public HTTP checks**. These are separate test suites, not 287 live-model cases.
+## 2. 技术栈
 
-**Benchmark performed on frozen V4.1 build.** Current audit fixes are unbenchmarked. The Critic evidence guard now retains mandatory citations or fails explicitly; offline historical repacking fits six cases and exceeds the original context budget in two. See the [independent final audit](docs/independent-final-audit.md) and [Claims Matrix](CLAIMS_MATRIX.md).
+| 层 | 已使用技术 |
+| --- | --- |
+| 后端与 Agent | Python、FastAPI、asyncio、Pydantic、HTTPX、自建 Runtime |
+| 实验依赖 | PostgreSQL、Redis、Redpanda/Kafka-compatible、aiokafka |
+| 可观测性 | OpenTelemetry、OTLP Collector、Jaeger、Prometheus、结构化日志 |
+| 前端 | 原生 HTML/CSS/JavaScript/SVG，历史回放与文档阅读器 |
+| 工程 | Docker Compose、pytest、Node test runner、Playwright |
 
-**Explore:** [Recorded Demo](#recorded-demo) · [Architecture](docs/architecture.md) · [Evaluation](docs/phase4-evaluation.md) · [Quick Start](#quick-start).
+没有已实施的 Java 服务、LangGraph、RAG 或向量数据库。
 
-**Start here:** [30-second introduction](docs/pitch-30s.md) · [5-minute demo](docs/demo-5min.md) · [Final status](FINAL_STATUS.md).
-
-![Sentinel Dashboard — real recorded incident](docs/screenshots/dashboard.png)
-
-**Try it locally without an API key:** `docker compose up -d --build` → [Local Recorded Demo](http://localhost:18082). First build requires Docker and internet for dependencies. No Kafka, database or model service is started by the default demo.
-
-## Key Results — V4.1 Benchmark
-
-| Metric | Frozen result |
-|---|---:|
-| Fault scenarios | 8 |
-| Workflow completion | 8/8 |
-| Root cause accuracy | 7/8 (87.5%) |
-| Service localization | 7/8 |
-| Workflow tokens | 1,461,870 |
-| Mean workflow duration | 78.75 seconds |
-| Model | deepseek-chat |
-| Phase 4 test gate | 189 passed |
-
-One first dispatch per scenario. Retry storm remains incorrect. All eight Critic verdicts are **PARTIALLY_VERIFIED**. Tokens exclude Evaluator; cost is Unknown without configured prices. This small controlled benchmark is not a production accuracy estimate.
-
-## Architecture
+## 3. 系统架构
 
 ```mermaid
 flowchart LR
-    U[User] --> D[Sentinel Dashboard]
-    D --> API[Incident API]
-    API --> A[Agent Runtime]
-    A --> T[Logs / Metrics / Trace / Repository / Infra tools]
-    T --> SYS[Gateway / User / Order / Payment / Inventory / Notification]
-    SYS --> INF[PostgreSQL / Redis / Kafka]
-    A --> P[Candidate sandbox / contracts / replay]
-    P --> C[Critic / review-only report]
+  UI["Dashboard / 回放界面"] --> PUBLIC["只读 Public API"]
+  PUBLIC --> FILES[("脱敏历史记录 / provenance")]
+  LIVE["本地 Live API"] --> AGENT["自建 Agent Runtime"]
+  AGENT --> LLM["DeepSeek-compatible Provider"]
+  AGENT --> TOOLS["日志 / 指标 / Trace / 源码工具"]
+  TOOLS --> LAB["六服务故障实验室"]
+  LAB --> DATA[("PostgreSQL / Redis / Redpanda")]
+  AGENT --> PATCH["受限候选补丁 / 沙箱回放"]
+  PATCH --> CRITIC["Critic / 人工审阅报告"]
 ```
 
-The public demo deploys only Dashboard + read-only API + recorded files. The full local lab has six microservices and real telemetry dependencies. [Local Architecture page](http://localhost:18082/architecture.html).
+默认 `compose.yaml` 只有录制演示；完整实验室在 `compose.live.yaml`，两种模式的依赖和授权不同。
 
-## How It Works
+## 4. 核心功能
 
-A controlled fault produces real HTTP failures, logs, metrics, distributed spans and dependency observations. The Agent investigates through constrained tools; evidence IDs and read citations connect claims to observations. A code candidate is tested against immutable contracts and real service replay before review.
+| 能力 | 源码与证据 |
+| --- | --- |
+| 只读回放、根因、证据和补丁展示 | [public_demo.py](sentinel/public_demo.py)、[portfolio/data](portfolio/data/) |
+| 状态、预算、结构化修复、响应日志与恢复 | [runtime_agent.py](sentinel/runtime_agent.py)、[runtime_state.py](sentinel/runtime_state.py) |
+| 工具调用与真实故障实验室 | [runtime_tools.py](sentinel/runtime_tools.py)、[services](services/) |
+| 受限补丁与 Critic | [generic_patching.py](sentinel/generic_patching.py)、[Claims Matrix](CLAIMS_MATRIX.md) |
 
-## Agent Workflow
+## 5. 关键工程实现与源码位置
 
-Incident → Triage → Planner → Tool → Evidence → Hypothesis → Validation → Root Cause → Eligibility → Candidate → Tests / Replay → Critic → Report.
+- **调查结论需要能追溯到实际读过的证据。** Runtime 保存证据 ID、读取记录和引用，Critic 交接必须保留必要引用；上下文装不下时明确失败。历史缺陷与当前保护见 [独立审计](docs/independent-final-audit.md)。
+- **上游失败不能变成无限循环。** 有界状态、修复预算、熔断、检查点与响应日志约束执行；历史包含真实 SIGKILL 恢复和本机 Provider fixture，两者不混称云端验证。提交前丢失响应仍可能重复计费。
+- **公开展示不需要模型或数据库权限。** 独立 Public API 仅读取录制文件并拒绝变更请求，见 [只读边界测试](tests/test_portfolio.py)。2026-10-18 前一阶段记录 78 项离线测试通过；本次仅验收文档，没有启动 Live Lab。
 
-Errors enter durable state, bounded repair and checkpoint recovery. This is more than Prompt → LLM → Answer. No generic candidate is automatically deployed.
+## 6. 本地部署教程
 
-## Fault Lab
+<a id="quick-start"></a>
 
-The local lab implements PostgreSQL slow queries, connection-pool exhaustion, N+1, cache miss pressure, Kafka consumer lag, downstream timeout, retry storms and HTTP 500 code exceptions. Faults can be triggered and stopped; registry/ground truth belongs to the evaluator, not the Investigator.
+需要 Docker Engine/Desktop 与 Compose v2。只启动录制演示，不需要 API Key：
 
-## Evaluation
-
-| Version | Workflow | Root cause | Notes |
-|---|---:|---:|---|
-| Rule | 8/8 | 7/8 | Domain-specific predicates |
-| V1 Pure LLM | 8/8 | 5/8 | First baseline |
-| V2 Hybrid | 8/8 | 6/8 | Triage + model investigation |
-| V3 Context Optimized | 2/8 | 1/8 | **FAILED EXPERIMENT / RUNTIME RELIABILITY FAILURE** |
-| V3.1 Runtime Experiment | 1/8 | 1/8 | **FAILED EXPERIMENT / RUNTIME RELIABILITY FAILURE** |
-| V4 First Controlled | 7/8 | 5/8 | Two fixture-confounded trials retained; excluded from Pareto |
-| V4.1 Reliable Hybrid | 8/8 | 7/8 | Independent benchmark-v2 release cohort |
-
-V4.1 is not a single-variable compression ablation: runtime and readable business source changed. It still consumed about 1.46M tokens. Accuracy, cost, latency and reliability trade off. Rule is strong in this fixed domain; the latest version is not automatically best on every axis.
-
-[Local Evaluation page](http://localhost:18082/evaluation.html) · [Full methodology and open findings](docs/phase4-evaluation.md).
-
-## What Failed
-
-V3 context optimization caused workflow completion to collapse. Context reconstruction lost correction feedback; structured output recovery was insufficient; convergence removed evidence tools too early; budget accounting and telemetry pressure exposed more failures. V3.1's first intervention also failed. Separate qualification reached 5/5 before V4, but never replaced first results.
-
-Explicit state, pinned errors, read tracking, separate budgets, bounded repair and measured telemetry improved the final workflow result. Independent inspection found that frozen Critic inputs omitted some root-cited evidence in all eight cases, and the readable fault helper reveals experiment implementation. The post-freeze guard rejects silent omission and undelivered citations; current workflow completion has not been rebenchmarked. Historical failures are retained, not hidden or rescored.
-
-## AI Patch
-
-Four constrained function profiles: pricing, payment, order and inventory. Real model component follow-up: 4/4 candidates validated, with earlier failures retained. The featured V4.1 pricing candidate passed nine contract tests and changed eight identical failing inputs from 100% to 0% HTTP 500 in a three-service sandbox with real PostgreSQL/Redis/Kafka.
-
-**CANDIDATE PATCH · NOT DEPLOYED.** Financial logic is HIGH risk. Successful requests did more work, so the measured P95 increased; this is not a latency optimization claim.
-
-## Runtime Reliability
-
-Typed investigation state, hypothesis transitions, six budgets, citation registry, bounded schema repair, repeated-failure circuit breaker, public-response journal and tool receipts. Real SIGKILL/exit 137 and same-run resume were tested. Protocol fixtures exercise 429/500/invalid JSON/timeouts without pretending they are cloud incidents. A response lost before commit may still be billed twice.
-
-## Quick Start
-
-Requires Docker Engine with Compose v2 / Docker Desktop. Clone this repository and start the recorded demo locally:
-
-```sh
-git clone https://github.com/tangwencan666/Project-Sentinel.git project-sentinel
-cd project-sentinel
-cp .env.example .env
+```powershell
+git clone https://github.com/tangwencan666/Project-Sentinel.git
+cd Project-Sentinel
 docker compose up -d --build
 ```
 
-Windows PowerShell: use `Copy-Item .env.example .env` instead of `cp`. The `.env` copy is optional for Recorded Demo. Existing credentials are never needed or forwarded to the public image. Open http://localhost:18082.
+打开 `http://localhost:18082`。端口冲突时设置 `DEMO_PORT`；首次构建需要依赖下载。可用 `python scripts/check_environment.py --mode recorded` 检查环境。停止仅使用本项目 `docker compose down`，不删除实验室数据卷。
 
-Optional environment check (Python 3.10+ on host):
+<a id="recorded-demo"></a>
 
-```sh
-python scripts/check_environment.py --mode recorded
-```
+Recorded Demo 的播放、倍速与跳转只改变回放游标。它没有外部公开域名，也不执行实时诊断。需要 Live Lab 时先阅读 [部署边界](docs/deployment-public-demo.md) 和 [架构](docs/architecture.md)，再单独配置模型与实验依赖；本次文档验收未启用 Live、注入故障或执行收费模型测试。
 
-If port 18082 is occupied, set `DEMO_PORT=18084` and open that port. First build requires package downloads; later starts use the built image. Stop only this demo with `docker compose down`; do not remove lab volumes.
+## 7. 真实运行截图
 
-## Recorded Demo
+![历史真实故障 Dashboard](docs/screenshots/dashboard.png)
 
-The default homepage labels all observations **RECORDED DEMO**. The featured run is `759044e6-c016-489b-a459-137ca4846462`, recorded 2026-09-22 UTC, model deepseek-chat. Play / Pause / Restart / 1× / 2× / 4× / Skip to Root Cause change only the playback cursor.
+图片与 `portfolio/data/` 来自既有真实录制，本次文档验收没有生成新界面。完整来源、原始运行 ID 与实验限制见 [独立审计](docs/independent-final-audit.md) 和 [演示指南](docs/demo-5min.md)。
 
-Original events, evidence, diagnosis, patch and tests come from that same Run. Exact fault-trigger time was not persisted; the UI shows the actual first fault observation and operator-requested incident creation. Summary loads first, raw evidence on demand. Public projections and SHA256 provenance live in `portfolio/data/`; original internal experiment archives remain local and excluded from Git.
+## 8. 测试结果与已知限制
 
-## Live Mode
+| 验证 | 结果与边界 |
+| --- | --- |
+| 2026-10-18 前一阶段 Public API 专项 | 78 passed；只读记录、变更拒绝、路径与展示边界；无付费调用 |
+| 2026-09-23 历史独立审计 | 后端 287、前端 17；另有浏览器与 HTTP 检查，不能累计成真实模型样本数 |
+| 冻结 V4.1 Benchmark | 8 场景、7 个根因正确；八个 Critic 均为 PARTIALLY_VERIFIED |
+| 当前付费 Benchmark / 生产压测 | 本次文档验收未执行 |
 
-The existing full lab is preserved in `compose.live.yaml` on port 18083. Configure `.env` with your provider URL, model and API key, then explicitly set `LIVE_AI_ENABLED=true`:
-
-```sh
-docker compose -f compose.live.yaml up -d --build
-```
-
-Open http://localhost:18083/live.html. With the default false, controls, detector dispatch and automatic resume are disabled; telemetry remains readable. Live mode can spend real model tokens and inject actual faults. Do not expose this stack publicly. Phase 5 does not rerun a paid benchmark.
-
-## Security
-
-`PUBLIC_DEMO_MODE=true` runs a separate no-DB/no-provider server. All mutations are rejected. The minimal image has no secret mounts, tool dispatcher, live agent, database driver or Docker socket; it is non-root and filesystem read-only. Logs, traces and source are rendered as escaped untrusted text. [Public deployment and limits](docs/deployment-public-demo.md).
-
-The audit fixed inconsistent symlink checks and the public page path gate, and rejects byte-range requests before the pinned Starlette Range parser. Dependency advisory debt remains; this is not a claim that every dependency or Docker image is vulnerability-free. See the [security assessment](docs/independent-final-audit.md#security).
-
-## Limitations
-
-- Eight controlled scenarios, one formal first dispatch each; no statistical generalization or production SLO claim.
-- Frozen V4.1 retains the Critic handoff defect. Current code has a required-citation guard; oversized mandatory evidence bundles fail explicitly. No new 8/8 result is claimed. Experiment-helper visibility remains.
-- Four constrained patch profiles, shared sandbox kernel, no arbitrary-repository remediation or live generic Apply.
-- No live multi-tenant RBAC or distributed execution leases; no end-to-end exactly-once billing.
-- Public Demo displays history, not a continuously operating commerce deployment. No public domain has been purchased or deployed.
-
-## Local verification (no paid benchmark)
-
-The full backend tests need the local lab dependencies, with `LIVE_AI_ENABLED=false`:
-
-```sh
-docker compose -f compose.live.yaml up -d --build
-python scripts/test_phase5.py --output backend-local.json
-npm ci
+```powershell
+python -m pytest tests/test_portfolio.py -q
 npm test
-# Linux/macOS: npx playwright install chromium
-npm run test:e2e -- browser-local.json
-python scripts/audit_portfolio.py --output repository-local.json
 ```
 
-Browser tests use installed Edge on Windows, Playwright Chromium elsewhere; set
-`PLAYWRIGHT_CHANNEL` if needed. `SENTINEL_DEMO_URL` changes the recorded demo URL.
-Use new result names: audit/test scripts preserve prior evidence. The public demo
-needs no Node dependency; Node/Playwright are development test tools only.
-The backend gate uses the included genuine `portfolio/data/` recording
-for the historical 90-span trace regression; internal experiment archives are no
-longer required by that test. Frontend verification adds 17 local tests: seven replay
-tests and ten document-rendering/security tests. The document reader supports section
-links, tables, screenshots and original Markdown downloads without interpreting HTML.
-The historical phase-one to phase-four evaluation scripts reference their frozen lab
-layout and local experiment archives; they are not the Phase 5 quick-start path.
-Do not run them to reproduce the portfolio display or refresh screenshots.
+公开模式没有实时多租户 RBAC、通用自动修复部署或 exactly-once 计费保证。沙箱共享内核；依赖仍有待处理的漏洞债务。不得把固定故障域结果推广为生产准确率或任意仓库修复能力。
 
-## Project Structure
+[本次文档验收验证](docs/PORTFOLIO_VERIFICATION.md) · [技术栈](docs/tech-stack.md) · [面试问题](docs/interview-qa.md) · [完整实验方法](docs/phase4-evaluation.md) · [原 README](docs/history/README.before-portfolio-20261018.md)
 
-```text
-sentinel/          # Existing agent runtime + isolated public read-only API
-services/          # Six-service commerce lab
-web/               # Portfolio UI, playback, preserved local Live workspace
-portfolio/data/    # Sanitized genuine recordings + provenance manifest
-infra/             # Local SQL, metrics and tracing configuration
-tests/             # Runtime, contracts, public API and security tests
-scripts/           # Export, environment validation, audits and browser tests
-docs/              # Design, screenshots, demo scripts and interview materials
-compose.yaml       # Default minimal recorded demo
-compose.live.yaml  # Explicit local full-stack lab
-```
-
-## Documentation
-
-**Recruiter path:** this README → [Screenshot](docs/screenshots/dashboard.png) → [Architecture in five minutes](docs/architecture-cheatsheet.md) → [Demo](docs/demo-5min.md) → [Evaluation](docs/phase4-evaluation.md) → [V3 failure story](docs/v3-failure-story.md).
-
-**Developer path:** [Quick Start](#quick-start) → [Architecture](docs/architecture.md) → [Agent design](docs/agent-design.md) → [Fault Lab](#fault-lab) → [Evaluation](docs/phase4-evaluation.md) → [Tests](#local-verification-no-paid-benchmark). Full local lab and recorded public deployment have separate entry points.
-
-[30-second pitch](docs/pitch-30s.md) · [1-minute pitch](docs/pitch-1min.md) · [3-minute pitch](docs/pitch-3min.md) · [10-minute technical demo](docs/demo-10min.md) · [49 interview questions](docs/interview-qa.md) · [24 hard questions](docs/interview-hard-questions.md) · [Interview depth map](docs/interview-depth-map.md).
-
-[中文 / English resume](docs/resume.md) · [Three-bullet resume](docs/resume-short.md) · [Actual tech stack](docs/tech-stack.md) · [Limitations](docs/limitations.md) · [Future work — not implemented](docs/future-work.md) · [Public deployment](docs/deployment-public-demo.md) · [Final delivery audit](docs/final-portfolio-audit.md) · [Phase 5 acceptance](docs/phase5-acceptance.md).
+[本地验收记录](docs/LOCAL_ACCEPTANCE.md) · [测试证据及版本索引](docs/TEST_EVIDENCE.md)
