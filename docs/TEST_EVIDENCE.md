@@ -23,3 +23,7 @@ npm test
 ```
 
 完整后端测试另需 Python 完整依赖与真实本地实验服务；浏览器测试需要 `npm ci` 安装 Playwright，非 Windows 环境还需浏览器。原始命令保留于 [英文首页的验证章节](../README_EN.md#local-verification-no-paid-benchmark)。它们不是启动只读演示的必要步骤，本次没有重跑这些完整验证。
+
+## 2026-10-22 全仓库中文化
+
+继首页改造后，继续整理全仓库中文导航、技术说明、历史导读与前端显示文本。本轮执行前端 18 项、只读 API 78 项、真实录制浏览器 37 项、演示干跑 8 步，另有标注的 Live 前端 fixture 6 项；不同类别不相加为单测或模型样本。没有启动 Live Lab 或调用真实模型。原件保护、环境差异、失败尝试和完整清单见 [本轮验证记录](localization-validation.md)。
