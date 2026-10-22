@@ -1,99 +1,194 @@
+[中文](README.md) | [English](README_EN.md)
+
 # Project Sentinel
 
-面向微服务故障排查的 AI Agent 实验与求职展示项目。Agent 读取日志、指标、Trace 与源码，通过工具和证据引用形成根因判断，再对受限候选补丁进行沙箱验证。
+面向微服务故障排查的 AI Agent 工程实践项目：从日志、指标、Trace 和源码中收集证据，形成可追溯的根因判断，并在受限沙箱中验证候选补丁。
 
-**默认演示为 RECORDED DEMO：真实历史运行的只读回放。** 它不代表持续运行的生产系统。Live Lab 需要单独启用；候选补丁不会自动部署。
+项目围绕“结账接口报错时，Agent 如何调查、如何证明结论、失败后如何恢复”展开，包含六服务故障实验室、自建 Agent Runtime、评测记录和可交互的历史回放，适合从 Agent 开发、后端工程和可观测性三个角度阅读。
 
-## 1. 项目简介
+**默认启动的是 RECORDED DEMO，即真实历史调查的只读回放。** 运行演示无需 API Key；实时调查需要单独启动 Live Lab。项目处于实验与工程展示阶段，候选补丁没有自动部署到生产环境。
 
-项目用八类受控故障比较规则、LLM 与 Hybrid 调查流程，保留失败实验、恢复过程和证据限制。重点展示 Agent 状态、工具权限、证据交接、恢复与验证，而非只展示一段模型回答。
+阅读入口：[架构速记](docs/architecture-cheatsheet.md) · [五分钟演示](docs/demo-5min.md) · [测试证据](docs/TEST_EVIDENCE.md) · [本地部署](#本地部署)
 
-冻结 V4.1 的八个场景完成 8/8、根因正确 7/8，仅是小规模受控实验。当前引用保护修复尚未重跑完整付费 Benchmark，不能将历史成绩赋给当前代码。
+## 核心功能
 
-## 2. 技术栈
+| 功能 | 已实现内容 | 实现位置 |
+| --- | --- | --- |
+| 故障实验室 | 六个微服务及八类受控故障：慢查询、连接池耗尽、N+1、缓存失效压力、Kafka 消费积压、下游超时、重试风暴、HTTP 500 代码异常 | [services/](services/)、[scenarios.py](sentinel/scenarios.py) |
+| Agent 调查 | 支持规则、Pure LLM 与 Hybrid 流程；通过受控工具读取遥测和源码，记录假设、证据及根因 | [agent.py](sentinel/agent.py)、[hybrid.py](sentinel/hybrid.py)、[runtime_agent.py](sentinel/runtime_agent.py) |
+| 运行控制与恢复 | 持久化调查状态、工具回执与模型响应；提供预算约束、结构化输出修复、重复失败熔断及检查点恢复 | [runtime_state.py](sentinel/runtime_state.py)、[checkpoints.py](sentinel/checkpoints.py)、[provider.py](sentinel/provider.py) |
+| 候选补丁验证 | 对 pricing、payment、order、inventory 四类受限业务函数生成候选，执行 AST 校验、不可变合同测试和三服务 HTTP 重放，再交由 Critic 复核 | [generic_patching.py](sentinel/generic_patching.py)、[multiservice_sandbox.py](sentinel/multiservice_sandbox.py) |
+| 历史回放与结果查看 | 按原事件顺序查看调查、错误、恢复、证据、根因和补丁；展示不同版本的评测结果与来源清单 | [public_demo.py](sentinel/public_demo.py)、[web/](web/)、[portfolio/data/](portfolio/data/) |
 
-| 层 | 已使用技术 |
-| --- | --- |
-| 后端与 Agent | Python、FastAPI、asyncio、Pydantic、HTTPX、自建 Runtime |
-| 实验依赖 | PostgreSQL、Redis、Redpanda/Kafka-compatible、aiokafka |
-| 可观测性 | OpenTelemetry、OTLP Collector、Jaeger、Prometheus、结构化日志 |
-| 前端 | 原生 HTML/CSS/JavaScript/SVG，历史回放与文档阅读器 |
-| 工程 | Docker Compose、pytest、Node test runner、Playwright |
+播放、倍速和跳转只改变回放游标，不重新调用模型或执行工具。停止故障注入与代码修复是两种不同操作；历史评测和当前源码也分别记录。
 
-没有已实施的 Java 服务、LangGraph、RAG 或向量数据库。
+## 技术栈
 
-## 3. 系统架构
+技术选择以 [requirements.txt](requirements.txt)、[requirements.lock](requirements.lock)、[package.json](package.json) 和 Compose 配置为依据。
+
+| 层次 | 技术 | 在项目中的作用 |
+| --- | --- | --- |
+| 后端 | Python、FastAPI、Uvicorn、Pydantic、asyncio | Incident API、六服务实验室、数据契约与异步调查流程；Docker 镜像使用 Python 3.12 |
+| Agent 与模型 | 自建 Agent Runtime、HTTPX、兼容 Chat Completions 的 Provider | Tool Calling、结构化结果、用量记录；冻结云端实验使用 deepseek-chat |
+| 数据与消息 | PostgreSQL 16、psycopg/pool、Redis 7、Redpanda、aiokafka | 业务 SQL、连接池、缓存和 Kafka 兼容消息生产/消费 |
+| 可观测性 | OpenTelemetry、OTLP Collector、Jaeger、Prometheus | 跨服务 Trace、指标和结构化日志关联 |
+| 前端 | 原生 HTML、CSS、JavaScript、SVG | Dashboard、拓扑、回放控制和文档阅读器 |
+| 运行与验证 | Docker Compose、pytest、Node test runner、Playwright | 环境编排、后端/合同测试、前端单测与浏览器验证 |
+
+Agent 编排由仓库内的 Python 模块实现，未使用 LangGraph。Node 与 Playwright 用于开发验证，默认演示运行不依赖 Node。详细范围见 [实际技术栈](docs/tech-stack.md)。
+
+## 系统架构
 
 ```mermaid
 flowchart LR
-  UI["Dashboard / 回放界面"] --> PUBLIC["只读 Public API"]
-  PUBLIC --> FILES[("脱敏历史记录 / provenance")]
-  LIVE["本地 Live API"] --> AGENT["自建 Agent Runtime"]
-  AGENT --> LLM["DeepSeek-compatible Provider"]
-  AGENT --> TOOLS["日志 / 指标 / Trace / 源码工具"]
+  UI["Dashboard / 历史回放"] --> PUBLIC["只读 Public API"]
+  PUBLIC --> FILES[("脱敏历史记录 / manifest")]
+  LIVE["本地 Live API"] --> RUNTIME["自建 Agent Runtime"]
+  RUNTIME --> MODEL["Chat Completions Provider"]
+  RUNTIME --> TOOLS["日志 / 指标 / Trace / 源码工具"]
   TOOLS --> LAB["六服务故障实验室"]
-  LAB --> DATA[("PostgreSQL / Redis / Redpanda")]
-  AGENT --> PATCH["受限候选补丁 / 沙箱回放"]
-  PATCH --> CRITIC["Critic / 人工审阅报告"]
+  LAB --> DEPS[("PostgreSQL / Redis / Redpanda")]
+  RUNTIME --> PATCH["候选补丁 / 合同测试 / 沙箱重放"]
+  PATCH --> CRITIC["Critic / 审阅报告"]
 ```
 
-默认 `compose.yaml` 只有录制演示；完整实验室在 `compose.live.yaml`，两种模式的依赖和授权不同。
-
-## 4. 核心功能
-
-| 能力 | 源码与证据 |
+| 模块 | 职责与调用关系 |
 | --- | --- |
-| 只读回放、根因、证据和补丁展示 | [public_demo.py](sentinel/public_demo.py)、[portfolio/data](portfolio/data/) |
-| 状态、预算、结构化修复、响应日志与恢复 | [runtime_agent.py](sentinel/runtime_agent.py)、[runtime_state.py](sentinel/runtime_state.py) |
-| 工具调用与真实故障实验室 | [runtime_tools.py](sentinel/runtime_tools.py)、[services](services/) |
-| 受限补丁与 Critic | [generic_patching.py](sentinel/generic_patching.py)、[Claims Matrix](CLAIMS_MATRIX.md) |
+| `sentinel/public_demo.py` | 默认入口；独立读取录制文件并校验 manifest，不导入 Live Agent、数据库或 Provider 模块 |
+| `sentinel/api.py` | 本地 Live 入口；提供事故、遥测、调查和恢复接口，按显式模式调用调查实现 |
+| `sentinel/runtime_agent.py` | 协调 Triage、Planner、Investigator、候选生成和 Critic；将执行进度交给检查点存储 |
+| `sentinel/runtime_tools.py`、`sentinel/tool_registry.py` | 校验当前阶段、工具名称与参数；调用观测适配器和源码工具，保存证据与工具回执 |
+| `sentinel/evidence_compiler.py`、`sentinel/context_delivery.py` | 在上下文预算内组织证据，记录实际交付给模型的读取范围，保留必须引用的证据 |
+| `sentinel/generic_patching.py`、`sentinel/multiservice_sandbox.py` | 约束候选文件和 AST，执行合同测试及真实依赖重放，输出风险与验证结果 |
+| `services/`、`infra/` | 六服务业务实验室，以及 SQL、指标抓取、Trace 收集配置 |
 
-## 5. 关键工程实现与源码位置
+Live 调查的主要流程为：事故信号 → Triage → Planner → 工具与证据 → 假设和根因提交 → 修复资格判断 → 候选测试/重放 → 确定性校验与 Critic → 报告。评分器使用实验真值评估结果，调查工具不提供真值注册表访问能力。
 
-- **调查结论需要能追溯到实际读过的证据。** Runtime 保存证据 ID、读取记录和引用，Critic 交接必须保留必要引用；上下文装不下时明确失败。历史缺陷与当前保护见 [独立审计](docs/independent-final-audit.md)。
-- **上游失败不能变成无限循环。** 有界状态、修复预算、熔断、检查点与响应日志约束执行；历史包含真实 SIGKILL 恢复和本机 Provider fixture，两者不混称云端验证。提交前丢失响应仍可能重复计费。
-- **公开展示不需要模型或数据库权限。** 独立 Public API 仅读取录制文件并拒绝变更请求，见 [只读边界测试](tests/test_portfolio.py)。2026-10-18 前一阶段记录 78 项离线测试通过；本次仅验收文档，没有启动 Live Lab。
+默认 `compose.yaml` 只运行只读演示；`compose.live.yaml` 才启动完整实验室。部分早期设计文档保留旧版本行为，阅读当前实现时请结合 [架构速记](docs/architecture-cheatsheet.md)、[独立审计](docs/independent-final-audit.md) 和源码。
 
-## 6. 本地部署教程
+## 核心技术亮点
 
-<a id="quick-start"></a>
+- **把调查状态与对话历史分开管理。** `InvestigationState` 保存假设、错误、读取记录、待执行动作和分类预算；结构化错误携带修复建议，重复失败受到熔断约束，避免仅靠追加 Prompt 推进调查。
+- **证据引用关联实际读取范围。** 工具结果进入证据账本，根因提交校验 Evidence ID 与源码行范围；Critic 所需证据必须保留，超过上下文预算时显式失败。上下文压缩记录遗漏项和估算口径，不把字符估算当作 Provider 实际 token 用量。
+- **恢复考虑持久化边界。** 工具回执支持复用已完成调用；模型响应日志与逻辑请求摘要支持恢复时重放。远端响应尚未落盘时仍可能重复请求或计费，当前实现没有端到端 exactly-once 保证。
+- **修复验证包含行为约束。** 候选只能修改允许的业务函数，不能改测试或评测真值；在原版与候选上分别执行合同测试、HTTP 重放及依赖观测。财务逻辑标为 HIGH risk，通用候选禁止自动 Apply。
+- **展示入口与运行入口隔离。** Public API 拒绝非 GET/HEAD 请求，镜像不包含 Live 执行模块或密钥挂载；启动时校验录制数据哈希，前端将外部观测作为不可信文本渲染。
 
-需要 Docker Engine/Desktop 与 Compose v2。只启动录制演示，不需要 API Key：
+上述实现可以分别从 [Runtime](sentinel/runtime_agent.py)、[工具执行](sentinel/runtime_tools.py)、[证据编译](sentinel/evidence_compiler.py)、[Provider](sentinel/provider.py) 和 [补丁校验](sentinel/generic_patching.py) 追踪。审计保留了历史缺陷、失败实验和修复边界，见 [Claims Matrix](CLAIMS_MATRIX.md)。
 
-```powershell
+## 本地部署
+
+### 环境要求
+
+- Git、Docker Engine/Desktop 和 Docker Compose v2；首次构建需要下载镜像与 Python 依赖。
+- 只读演示不需要本机 Python、Node、数据库或模型 API Key。
+- 本机执行 Python 验证命令时，建议使用与容器一致的 Python 3.12；运行前端单测另需支持 `node --test` 的 Node。
+
+### 启动只读演示
+
+```sh
 git clone https://github.com/tangwencan666/Project-Sentinel.git
 cd Project-Sentinel
 docker compose up -d --build
 ```
 
-打开 `http://localhost:18082`。端口冲突时设置 `DEMO_PORT`；首次构建需要依赖下载。可用 `python scripts/check_environment.py --mode recorded` 检查环境。停止仅使用本项目 `docker compose down`，不删除实验室数据卷。
+打开 [本地演示](http://localhost:18082)。默认端口只绑定回环地址；首次启动可用以下命令查看状态：
 
-<a id="recorded-demo"></a>
+```sh
+docker compose ps
+docker compose logs --tail=50 sentinel-demo
+```
 
-Recorded Demo 的播放、倍速与跳转只改变回放游标。它没有外部公开域名，也不执行实时诊断。需要 Live Lab 时先阅读 [部署边界](docs/deployment-public-demo.md) 和 [架构](docs/architecture.md)，再单独配置模型与实验依赖；本次文档验收未启用 Live、注入故障或执行收费模型测试。
-
-## 7. 真实运行截图
-
-![历史真实故障 Dashboard](docs/screenshots/dashboard.png)
-
-图片与 `portfolio/data/` 来自既有真实录制，本次文档验收没有生成新界面。完整来源、原始运行 ID 与实验限制见 [独立审计](docs/independent-final-audit.md) 和 [演示指南](docs/demo-5min.md)。
-
-## 8. 测试结果与已知限制
-
-| 验证 | 结果与边界 |
-| --- | --- |
-| 2026-10-18 前一阶段 Public API 专项 | 78 passed；只读记录、变更拒绝、路径与展示边界；无付费调用 |
-| 2026-09-23 历史独立审计 | 后端 287、前端 17；另有浏览器与 HTTP 检查，不能累计成真实模型样本数 |
-| 冻结 V4.1 Benchmark | 8 场景、7 个根因正确；八个 Critic 均为 PARTIALLY_VERIFIED |
-| 当前付费 Benchmark / 生产压测 | 本次文档验收未执行 |
+`.env` 对只读演示是可选的。若 `18082` 被占用，可在 PowerShell 中设置端口后重新启动：
 
 ```powershell
+$env:DEMO_PORT = "18084"
+docker compose up -d --build
+```
+
+此时访问 [备用端口](http://localhost:18084)。可选环境检查需要本机 Python：
+
+```sh
+python scripts/check_environment.py --mode recorded --port 18084
+```
+
+默认端口无需传入 `--port`。停止演示使用 `docker compose down`。
+
+### 启动本地 Live Lab
+
+完整实验室运行六个业务服务、数据库、缓存、消息与可观测组件。先复制配置模板；如果已有 `.env`，直接编辑现有文件，保留原配置。
+
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+在本地 `.env` 中填写 `LLM_BASE_URL`、`LLM_MODEL`、`LLM_API_KEY`，并显式设置 `LIVE_AI_ENABLED=true`。随后执行：
+
+```sh
+docker compose -f compose.live.yaml up -d --build
+python scripts/check_environment.py --mode live
+```
+
+第二条命令需要本机 Python，只检查环境和只读观测，不发送模型请求。打开 [Live 工作区](http://localhost:18083/live.html)；创建调查会使用真实模型额度，故障控制会影响本地实验服务。`LIVE_AI_ENABLED=false` 时，故障/调查控制、自动检测派发与自动恢复关闭。完整说明见 [部署文档](docs/deployment-public-demo.md)。
+
+停止 Live Lab 使用 `docker compose -f compose.live.yaml down`，切换模式无需删除数据卷。密钥只保存在本地，完整实验室仅面向可信本机环境。
+
+## 测试与验证
+
+只读 API 和前端单测可独立执行，不需要启动 Live Lab 或调用模型。在新的 Python 虚拟环境中安装验证所需依赖：
+
+```sh
+python -m pip install fastapi==0.115.12 httpx==0.28.1 pytest==8.4.1 -c requirements.lock
 python -m pytest tests/test_portfolio.py -q
 npm test
 ```
 
-公开模式没有实时多租户 RBAC、通用自动修复部署或 exactly-once 计费保证。沙箱共享内核；依赖仍有待处理的漏洞债务。不得把固定故障域结果推广为生产准确率或任意仓库修复能力。
+`npm test` 使用 Node 内置 test runner，不需要下载 Playwright。开发完整后端时使用 `python -m pip install -r requirements.txt -c requirements.lock`；完整后端与浏览器验证的环境要求见 [测试证据](docs/TEST_EVIDENCE.md)。
 
-[本次文档验收验证](docs/PORTFOLIO_VERIFICATION.md) · [技术栈](docs/tech-stack.md) · [面试问题](docs/interview-qa.md) · [完整实验方法](docs/phase4-evaluation.md) · [原 README](docs/history/README.before-portfolio-20261018.md)
+| 证据范围 | 可核实结果与适用边界 |
+| --- | --- |
+| 冻结 V4.1 Benchmark | 八个受控场景，工作流完成 8/8、根因正确 7/8；八个 Critic 结果均为 `PARTIALLY_VERIFIED`，重试风暴仍误判 |
+| 历史独立审计 | 记录后端 287、前端 17 项通过；属于具名历史测试批次，不代表本次重跑完整后端 |
+| 本次文档验证 | 命令、环境与实际结果见 [2026-10-22 验证记录](docs/validation-20261022.md) |
 
-[本地验收记录](docs/LOCAL_ACCEPTANCE.md) · [测试证据及版本索引](docs/TEST_EVIDENCE.md)
+冻结成绩来源见 [录制评测数据](portfolio/data/evaluation.json)、[独立审计](docs/independent-final-audit.md) 和 [测试证据索引](docs/TEST_EVIDENCE.md)。冻结版本存在 Critic 引用交接缺陷；当前代码已加引用保护，但没有重跑完整付费 Benchmark，因此不能把历史 8/8 赋给当前源码。不同测试批次不累加为模型样本数。
+
+## 项目目录结构
+
+```text
+sentinel/          # Agent Runtime、证据工具、候选校验、Live 与只读 API
+services/          # 六服务业务实验室与受限业务函数
+infra/             # PostgreSQL 初始化、Prometheus 与 OTLP 配置
+web/               # Dashboard、历史回放、文档阅读器与本地 Live 页面
+portfolio/data/    # 脱敏历史记录、评测投影与来源 manifest
+tests/             # Runtime、合同、只读 API、回放和文档渲染测试
+scripts/           # 环境检查、数据导出、审计与实验验证脚本
+docs/              # 架构、部署、实验记录、截图与面试导读
+compose.yaml       # 默认只读演示
+compose.live.yaml  # 完整本地实验室
+Dockerfile.demo    # 最小只读镜像
+Dockerfile         # Live 实验镜像
+requirements.txt   # Python 直接依赖
+requirements.lock  # Python 依赖约束
+README_EN.md       # 保留的原英文首页
+```
+
+历史脚本可能引用未随 Git 发布的 `evaluation/` 冻结包和本地实验产物；源码仓库中的 `portfolio/data/` 提供公开展示所需记录。启动回放不需要重新运行历史评测脚本。
+
+## 已知限制和后续规划
+
+- 只有八类受控故障，主要使用单一模型；7/8 是实验计数，不能外推为生产准确率。实验 helper 可见，同模型 Critic 也可能与 Investigator 产生相关错误。
+- 历史 V3/V3.1 出现严重运行失败，V4.1 的重试风暴仍归因错误；完整记录见 [失败分析](docs/v3-failure-story.md) 和 [评测方法](docs/phase4-evaluation.md)。
+- 候选仅覆盖四类受限函数，沙箱共享内核，合同与有限输入重放不等于完整业务回归或任意仓库修复。
+- Live 系统尚无完整多租户 RBAC、分布式执行租约和生产发布治理；依赖漏洞维护仍有待办。默认回放不表示持续运行的生产服务。
+- 当前没有端到端 exactly-once 执行与计费保证；历史演示未保存精确故障注入时间，仅保留首次观察时间。
+
+后续方向包括：在引用保护后的源码上重新评测、扩展未见故障与重复实验、多模型及跨模型 Critic 对照、成本感知规划，以及审批、灰度和回滚流程。这些均为待实施工作，详见 [已知限制](docs/limitations.md) 与 [后续规划](docs/future-work.md)。
+
+## 运行截图与延伸阅读
+
+![历史真实调查 Dashboard](docs/screenshots/dashboard.png)
+
+截图与录制数据来自既有历史运行，本次文档更新没有生成新的模型实验或界面截图。
+
+[架构速记](docs/architecture-cheatsheet.md) · [五分钟演示](docs/demo-5min.md) · [Agent 设计（历史版本）](docs/agent-design.md) · [Runtime 演进记录](docs/phase4-runtime.md) · [受限补丁设计](docs/phase4-generic-patching.md) · [面试问答](docs/interview-qa.md)
