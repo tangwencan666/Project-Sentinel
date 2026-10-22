@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-18",
+  "base_commit": "a93c5483d9ccbc5d8a90e9f95063d303e3ecbc3d",
+  "scope": "documentation acceptance only",
+  "real_model_requests": 0,
+  "business_tests_rerun": false,
+  "historical_evidence": [
+    {
+      "date_or_version": "2026-09-23，初始审计修订 0d3cc795f2bd",
+      "scope": "后端287、前端17；不等于当前模型效果验收",
+      "evidence": "docs/independent-final-audit.md",
+      "sha256": "d03c51ae18cb16ad457c7fb717c5754c500cbc0fefde8ea44cdd07603c6a38f1",
+      "containing_source_snapshot": "a93c5483d9ccbc5d8a90e9f95063d303e3ecbc3d",
+      "binding": "hash identifies retained evidence in this source snapshot; does not assert the historical run used current working tree"
+    },
+    {
+      "date_or_version": "Frozen V4.1，冻结产物 SHA-256 见审计",
+      "scope": "8/8 workflow、7/8 root；八个 Critic 均 PARTIALLY_VERIFIED",
+      "evidence": "CLAIMS_MATRIX.md",
+      "sha256": "510b38cc0ccb8066d2bcc38f65f18c5470c15fb3b4b53eaba53121e87747f16b",
+      "containing_source_snapshot": "a93c5483d9ccbc5d8a90e9f95063d303e3ecbc3d",
+      "binding": "hash identifies retained evidence in this source snapshot; does not assert the historical run used current working tree"
+    },
+    {
+      "date_or_version": "2026-10-18 前一阶段",
+      "scope": "Public API 78 passed，离线；本次未重跑",
+      "evidence": "docs/PORTFOLIO_VERIFICATION.md",
+      "sha256": "4a6eb902481a32c19b85b8b3f74dd9594e51be192e9d8d43cd94c6c73b2c9125",
+      "containing_source_snapshot": "a93c5483d9ccbc5d8a90e9f95063d303e3ecbc3d",
+      "binding": "hash identifies retained evidence in this source snapshot; does not assert the historical run used current working tree"
+    }
+  ]
+}

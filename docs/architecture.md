@@ -1,30 +1,30 @@
-> Historical design note. Current Phase 4 runtime, compiler, generic sandbox and recovery evidence are documented in [phase4-runtime.md](phase4-runtime.md), [phase4-generic-patching.md](phase4-generic-patching.md) and [phase4-recovery-security.md](phase4-recovery-security.md).
+> 历史设计说明：下文保留早期版本约束。当前源码导读见 [Agent Runtime](agent-runtime.md)、[Evidence 与 Checkpoint](evidence-checkpoint.md)、[Sandbox 安全](sandbox-security.md)；历史演进另见 [Runtime 导读](phase4-runtime-zh.md)、[补丁导读](phase4-generic-patching-zh.md) 和 [恢复导读](phase4-recovery-security-zh.md)。
 
-# Architecture / 实现决策
+# 架构与实现决策
 
 ```mermaid
 flowchart LR
-  L[Bounded Load Generator] --> G[Gateway]
-  G --> U[User Service]
-  G --> O[Order Service]
-  G --> I[Inventory Service]
+  L["有界流量生成器"] --> G[Gateway]
+  G --> U["用户服务"]
+  G --> O["订单服务"]
+  G --> I["库存服务"]
   O --> I
-  O --> P[Payment Service]
+  O --> P["支付服务"]
   O --> K[Redpanda / Kafka]
-  K --> N[Notification Service]
-  I --> R[Redis catalog]
+  K --> N["通知服务"]
+  I --> R["Redis 目录缓存"]
   U & O & I & P & N --> DB[(PostgreSQL)]
-  G & U & O & I & P & N --> OT[OTel Collector]
+  G & U & O & I & P & N --> OT["OTel 收集器"]
   OT --> J[Jaeger]
   PR[Prometheus] --> G & U & O & I & P & N
-  UI[Dashboard] --> C[Sentinel API]
-  C --> D[Signal Detector]
-  D --> A[Supervisor]
-  A --> T[Allowlisted Evidence Tools]
+  UI["控制面板"] --> C["Sentinel API"]
+  C --> D["信号检测器"]
+  D --> A["监督控制器"]
+  A --> T["受限证据工具"]
   T --> DB & R & K & J & PR
-  A --> PATCH[Restricted Patch Runner]
-  PATCH --> TEST[Immutable pytest contract]
-  TEST --> REVIEW[Review / deploy]
+  A --> PATCH["受限补丁执行器"]
+  PATCH --> TEST["不可变 pytest 合同"]
+  TEST --> REVIEW["审查 / 旧版部署入口"]
   REVIEW --> O
 ```
 
@@ -36,13 +36,13 @@ flowchart LR
 
 第二阶段 Supervisor 最多 18 轮、40 次 Investigator 工具调用，每个批次最多 8 次；普通工具时限 25 秒，模型请求时限 45 秒，完整 AI 工作流时限 480 秒。受控恢复实验可进入 awaiting_recovery，再将真实前后观测交给 Critic。缺少配置为 awaiting_model，失败保留结构化错误；重启标记 interrupted，重试创建新 run，尚无精确 durable task resume。角色、契约、上下文和 token 上限详见 agent-design.md。
 
-## Ground truth 边界
+## 实验真值边界
 
 `sentinel/scenarios.py` 是操作/评估面；包含注入说明、真值与预期证据。Dashboard `/api/scenarios` 只输出操作标签。事故 signal 来自遥测，不包含 scenario_id。模型工具只允许固定 SQL、catalog TTL、offset 查询和 pricing 源码，不允许 Redis 枚举、任意 SQL、任意文件、shell、控制 API 或故障注册表。调查器没有 evaluator 工具。
 
 这是模型能力层面的隔离，不是多租户系统的物理隔离：控制面与工具同进程，仓库管理员仍可读取真值。生产隔离需拆控制/实验/调查服务与凭据。调查数据库账号只读且只有业务/日志表 SELECT，不能读取 incidents 或 agent_steps，也不能改业务表。
 
-## Patch 边界
+## 候选补丁边界
 
 AI FixAgent 生成真实 Unified Diff；第一阶段人工提交完整源文件的入口保留，来源标记 HUMAN，规则补丁标记 RULE_BASED。AST 只允许单一 total 函数及受限表达式；无 import、属性访问、任意函数调用、循环或文件/网络 API。原版和候选分别复制到独立测试目录。CPU、内存、输出与超时约束保护单元测试执行。候选随后接受真实 HTTP 故障重放与 Critic 检查。源码基础哈希必须匹配；用户确认部署时再校验 AST、工件哈希、candidate_verified 与 Critic VERIFIED。
 
@@ -50,6 +50,6 @@ AI FixAgent 生成真实 Unified Diff；第一阶段人工提交完整源文件�
 
 ## 参考
 
-- OpenTelemetry Python exporters: https://opentelemetry.io/docs/languages/python/exporters/
-- FastAPI instrumentation: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/fastapi/fastapi.html
-- Redpanda single-broker Compose: https://docs.redpanda.com/labs/docker-compose/single-broker/
+- OpenTelemetry Python 导出器： https://opentelemetry.io/docs/languages/python/exporters/
+- FastAPI 插桩： https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/fastapi/fastapi.html
+- Redpanda 单 Broker Compose： https://docs.redpanda.com/labs/docker-compose/single-broker/

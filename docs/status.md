@@ -1,15 +1,9 @@
-# Project status / Phase 5
+# 项目状态与阅读入口
 
-Final interview delivery: [FINAL_STATUS](../FINAL_STATUS.md),
-[delivery audit](final-portfolio-audit.md), 49 core questions and 24 hard questions.
-No new core capability or paid benchmark was added during this final audit.
+当前默认交付为端口 `18082` 的 Recorded Demo：只读 API、前端与真实历史记录，无需模型密钥或实验基础设施。完整 Live Lab 使用 `compose.live.yaml`、端口 `18083`，默认关闭模型、故障控制、检测派发和自动恢复。
 
-Project Sentinel — AI-Powered Production Incident Investigation & Remediation Platform.
+从 [统一中文导航](index.md) 进入 [状态说明](final-status-zh.md)、[架构](agent-runtime.md)、[部署](deployment-public-demo.md) 和 [本轮验证](localization-validation.md)。
 
-Current delivery is the recorded portfolio at http://localhost:18082. Default Compose runs only a read-only API and frontend with genuine historical data; no model key or experimental infrastructure is required.
+冻结 V4.1 仍为工作流 8/8、根因/服务 7/8、1,461,870 Token、平均 78.75 秒，冻结门禁 189。V3/V3.1 失败保留；后续 Phase 5 和独立审计不重跑这些模型结果。本次只整理中文文档及显示文本。
 
-The full existing local lab remains available through compose.live.yaml at port 18083. Live AI, fault controls, detector dispatch and checkpoint auto-resume are disabled by default. Real model use requires explicit local opt-in.
-
-Phase 4 frozen results remain unchanged: V4.1 workflow 8/8, root/service 7/8, 1,461,870 tokens, 78.75 seconds; 189 tests at freeze. V3 and V3.1 failed experiments remain visible. No new benchmark was run for Phase 5.
-
-Current verification, screenshots, GitHub hygiene and open limitations are in [Phase 5 acceptance](phase5-acceptance.md). Demo scripts, 49 interview questions, Chinese/English resume bullets and project pitches are linked from README.
+历史验收、审计、交付包路径和旧状态见 [历史索引](history-index.md)，它们不是当前源码验证结果。

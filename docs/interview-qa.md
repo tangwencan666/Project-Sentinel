@@ -46,7 +46,7 @@ Scenario Registry、评分器和实验答案不在 Investigator 可读工具路�
 
 ## 12. Critic 为什么会错？
 
-与 Investigator 使用同模型可能存在相关错误；提供给 Critic 的证据也可能不完整。最终重试风暴案例中，它的压缩包漏了一条已经引用的代码证据。全部八场只得到 PARTIALLY_VERIFIED，不能说验证问题解决了。
+与 Investigator 使用同模型可能存在相关错误；提供给 Critic 的证据也可能不完整。冻结版本以重试风暴为例暴露遗漏，独立审计确认八场 Critic 输入均缺少部分必需引用。当前源码已加入必需引用保护，缺失或超限时明确失败，但没有重跑完整付费 Benchmark。八场历史判定仍为 PARTIALLY_VERIFIED。
 
 ## 13. 为什么要 1.46M tokens？
 
@@ -110,7 +110,7 @@ Scenario Registry、评分器和实验答案不在 Investigator 可读工具路�
 
 ## 28. 项目最大的限制是什么？
 
-单轮八类受控事故，不能证明生产泛化；模型成本高；Critic 证据交接仍有缺陷；实验 helper 可见。修复引擎只覆盖四类受限函数，沙箱共享内核，不能支持任意恶意仓库。
+单轮八类受控事故，不能证明生产泛化；模型成本高；冻结版本 Critic 证据交接存在缺陷，当前保护未重跑完整评测；实验 helper 可见。修复引擎只覆盖四类受限函数，沙箱共享内核，不能支持任意恶意仓库。
 
 ## 29. 真正上线还缺什么？
 
@@ -190,7 +190,7 @@ Metrics 用聚合窗口说明“哪个服务、何时、错误率或延迟怎样
 
 ## 48. AI Patch 是如何生成与验证的？
 
-模型基于当前 Run 的源码与证据提交真实 diff；路径、函数签名、AST 和风险检查后，固定合同测试比较基线与候选，再执行专用 PostgreSQL schema、Redis namespace、Kafka topic 下的三服务重放。演示 pricing 是九项测试通过、八个请求恢复，但候选未部署。
+模型基于当前 Run 的源码与证据提交替换源码，控制器计算真实 diff；路径、函数签名、AST 和风险检查后，固定合同测试比较基线与候选，再执行专用 PostgreSQL schema、Redis namespace、Kafka topic 下的三服务重放。演示 pricing 是九项测试通过、八个请求恢复，但候选未部署。
 
 ## 49. 为什么必须有 Fault Lab？
 

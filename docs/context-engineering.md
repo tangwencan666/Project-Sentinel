@@ -1,6 +1,6 @@
-> Historical design note. Current Phase 4 runtime, compiler, generic sandbox and recovery evidence are documented in [phase4-runtime.md](phase4-runtime.md), [phase4-generic-patching.md](phase4-generic-patching.md) and [phase4-recovery-security.md](phase4-recovery-security.md).
+> 历史设计说明：下文保留早期版本约束。当前源码导读见 [Agent Runtime](agent-runtime.md)、[Evidence 与 Checkpoint](evidence-checkpoint.md)、[Sandbox 安全](sandbox-security.md)；历史演进另见 [Runtime 导读](phase4-runtime-zh.md)、[补丁导读](phase4-generic-patching-zh.md) 和 [恢复导读](phase4-recovery-security-zh.md)。
 
-# Context Engineering
+# 上下文工程
 
 V2 和 V3 使用同一 deepseek-chat、同一 Planner/Investigator/Verifier 流程；V3 启用结构化证据压缩。实验版本通过 `HYBRID_V2`、`HYBRID_V3` 显式区分。V1 冻结结果不参与修改或重新评分。
 
