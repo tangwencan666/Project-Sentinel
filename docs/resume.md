@@ -1,4 +1,4 @@
-# Resume material
+# 简历材料
 
 ## 中文（最多四条）
 
@@ -7,7 +7,7 @@
 - 使用 deepseek-chat 完成 V4.1 独立八场景首轮评估，工作流完成 8/8、根因及服务定位 7/8，调查用量 1,461,870 tokens；公开 V3/V3.1 失败和跨版本比较限制。
 - 实现四类受限业务函数修复候选与三服务沙箱验证；V4.1 pricing 候选通过 9 项合同测试及真实故障重放，未部署。Phase 4 冻结测试门禁为 189 passed，并提供无模型调用的录制 Demo。
 
-## English (at most four bullets)
+## 英文简历（最多四条，供英文投递使用）
 
 - Built Project Sentinel with six commerce microservices, PostgreSQL, Redis, Kafka and OpenTelemetry; implemented Hybrid Agent tool calling to connect real observations, evidence and root-cause reports.
 - Implemented a durable agent runtime with typed state, separate budgets, hypothesis transitions, bounded structured-output repair, citation tracking and checkpoints; validated real process kill/resume and retained unsuccessful attempts.

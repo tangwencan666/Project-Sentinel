@@ -8,7 +8,7 @@
 
 **默认启动的是 RECORDED DEMO，即真实历史调查的只读回放。** 运行演示无需 API Key；实时调查需要单独启动 Live Lab。项目处于实验与工程展示阶段，候选补丁没有自动部署到生产环境。
 
-阅读入口：[架构速记](docs/architecture-cheatsheet.md) · [五分钟演示](docs/demo-5min.md) · [测试证据](docs/TEST_EVIDENCE.md) · [本地部署](#本地部署)
+阅读入口：[统一中文导航](docs/index.md) · [Agent Runtime](docs/agent-runtime.md) · [五分钟演示](docs/demo-5min.md) · [本地部署](#本地部署)
 
 ## 核心功能
 
@@ -149,7 +149,7 @@ npm test
 | --- | --- |
 | 冻结 V4.1 Benchmark | 八个受控场景，工作流完成 8/8、根因正确 7/8；八个 Critic 结果均为 `PARTIALLY_VERIFIED`，重试风暴仍误判 |
 | 历史独立审计 | 记录后端 287、前端 17 项通过；属于具名历史测试批次，不代表本次重跑完整后端 |
-| 本次文档验证 | 命令、环境与实际结果见 [2026-10-22 验证记录](docs/validation-20261022.md) |
+| 本轮全仓库中文化验证 | 命令、环境与实际结果见 [中文化验证记录](docs/localization-validation.md)；[首轮首页验证](docs/validation-20261022.md) 单独保留 |
 
 冻结成绩来源见 [录制评测数据](portfolio/data/evaluation.json)、[独立审计](docs/independent-final-audit.md) 和 [测试证据索引](docs/TEST_EVIDENCE.md)。冻结版本存在 Critic 引用交接缺陷；当前代码已加引用保护，但没有重跑完整付费 Benchmark，因此不能把历史 8/8 赋给当前源码。不同测试批次不累加为模型样本数。
 
@@ -191,4 +191,4 @@ README_EN.md       # 保留的原英文首页
 
 截图与录制数据来自既有历史运行，本次文档更新没有生成新的模型实验或界面截图。
 
-[架构速记](docs/architecture-cheatsheet.md) · [五分钟演示](docs/demo-5min.md) · [Agent 设计（历史版本）](docs/agent-design.md) · [Runtime 演进记录](docs/phase4-runtime.md) · [受限补丁设计](docs/phase4-generic-patching.md) · [面试问答](docs/interview-qa.md)
+[中文文档导航](docs/index.md) · [Tool Calling](docs/tool-calling.md) · [Evidence / Checkpoint](docs/evidence-checkpoint.md) · [Sandbox 与安全](docs/sandbox-security.md) · [测试说明](docs/testing.md) · [历史实验导读](docs/history-index.md) · [面试问答](docs/interview-qa.md)

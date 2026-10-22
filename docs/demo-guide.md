@@ -1,4 +1,4 @@
-> Historical Phase 4 live-lab guide. For the current no-key portfolio, use [5-minute demo](demo-5min.md) and [10-minute demo](demo-10min.md). Current local live commands require compose.live.yaml and explicit LIVE_AI_ENABLED=true; the old default Compose commands below refer to the frozen Phase 4 layout.
+> 历史 Phase 4 Live 指南：当前无密钥演示请使用 [五分钟演示](demo-5min.md) 和 [十分钟演示](demo-10min.md)。旧默认 Compose 命令属于冻结布局；当前 Live 需 `compose.live.yaml` 和显式 `LIVE_AI_ENABLED=true`，见 [部署说明](deployment-public-demo.md)。
 
 # 现场演示 / Phase 4
 
@@ -16,7 +16,7 @@
 
 发布 V4.1 位于独立 Benchmark V2 区域。业务结构和可读代码范围已经变化，因此不把它当作单独压缩变量实验。
 
-## Live Investigation
+## 实时调查
 
 1. Dashboard 选择 **RUNTIME V4.1**。默认 V2 是历史基线操作模式。
 2. Fault Lab 触发一个真实故障；等待约 24 秒收集日志、Metrics 与完整 Trace，再创建调查。

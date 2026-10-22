@@ -1,36 +1,36 @@
-> Historical design note. Current Phase 4 runtime, compiler, generic sandbox and recovery evidence are documented in [phase4-runtime.md](phase4-runtime.md), [phase4-generic-patching.md](phase4-generic-patching.md) and [phase4-recovery-security.md](phase4-recovery-security.md).
+> 历史设计说明：下文保留早期版本约束。当前源码导读见 [Agent Runtime](agent-runtime.md)、[Evidence 与 Checkpoint](evidence-checkpoint.md)、[Sandbox 安全](sandbox-security.md)；历史演进另见 [Runtime 导读](phase4-runtime-zh.md)、[补丁导读](phase4-generic-patching-zh.md) 和 [恢复导读](phase4-recovery-security-zh.md)。
 
-# Hybrid SRE Agent architecture
+# Hybrid SRE Agent 架构
 
 V1 的原始设计与结果保留在 `evaluation/baselines/archive.zip`。当前支持 RULE_BASED、AI（Pure LLM）、HYBRID_V2、HYBRID_V3 四种显式模式。依据第三阶段实测，默认新调查使用 V2；V3 保留为显式实验模式，没有静默回退。精确实验源码保存在 `evaluation/frozen-framework.zip`。
 
 ```mermaid
 flowchart TD
-  I[Observed incident] --> S[Supervisor + durable checkpoint]
-  S --> T[Audited deterministic triage]
-  T --> P[LLM Planner + observed topology]
-  P --> A[LLM Investigator]
-  A --> C[Schema and phase checked tools]
-  C --> E[Raw evidence ledger]
-  E --> X[V2 previews / V3 evidence packs]
+  I["观测事故"] --> S["监督控制器与持久化 Checkpoint"]
+  S --> T["确定性 Triage 与审计"]
+  T --> P["模型 Planner 与观测拓扑"]
+  P --> A["模型 Investigator"]
+  A --> C["schema 与阶段校验工具"]
+  C --> E["原始证据账本"]
+  E --> X["V2 预览 / V3 证据包"]
   X --> A
-  A --> H[Hypothesis updates]
+  A --> H["假设更新"]
   H --> A
-  A --> R[RootCauseDecision + evidence fusion]
-  R --> F[FixAgent / NO_CODE_PATCH remediation]
-  F --> B[Immutable tests + actual HTTP replay]
-  F --> O[Optional operator recovery observations]
-  B --> D[Deterministic verifier]
+  A --> R["RootCauseDecision 与证据融合"]
+  R --> F["FixAgent / 无代码修复建议"]
+  F --> B["不可变测试与真实 HTTP 重放"]
+  F --> O["可选操作员恢复观测"]
+  B --> D["确定性校验器"]
   O --> D
-  D --> L[Separate LLM Critic session]
-  L --> V[Combined verdict with deterministic veto]
-  V --> Q[Report + measured usage + recorded replay]
-  Q --> U[Explicit operator Apply gate]
-  Q --> J[Post-run evaluator]
-  G[Evaluator-only truth registry] --> J
+  D --> L["独立模型 Critic 会话"]
+  L --> V["组合裁定与确定性否决"]
+  V --> Q["报告、实测用量与录制回放"]
+  Q --> U["显式操作员 Apply 门禁"]
+  Q --> J["终态后评分器"]
+  G["仅评分器可读的真值注册表"] --> J
 ```
 
-## Evidence and planning
+## 证据与规划
 
 `run_deterministic_triage` 调用同一受控工具注册表，采集 HTTP/Prometheus、SQL 差分、Redis 状态、Kafka 两次 offsets、连接池状态和真实 Trace。它只产生 advisory signals，每条绑定 Evidence ID；不输出根因类别，不读实验标签。健康 HTTP 不足以排除异步积压或缓存失效。
 
@@ -42,13 +42,13 @@ Planner 是独立轻量模型调用，输出 `InvestigationPlan` 的 suspected_s
 
 这里的“独立”是证据来源族去重，不是统计或因果独立性的证明：例如 HTTP 日志和窗口指标可能来自同一批请求。相关观测互相印证有价值，但不能把它们当成完全独立实验。
 
-## Stop, context and accounting
+## 停止条件、上下文与用量
 
 V2 使用有上限的原始预览，V3 对日志模板、指标窗口、Trace 关键部分、函数源码做预算压缩。详见 `context-engineering.md`。证据达到标准时直接进入验证；接近预算上限时强制模型输出结构化假设或最终判断，仍允许 UNKNOWN 和不确定性，证据门禁保持有效。限制为 12 个 Investigator 回合、28 次工具请求、每批最多 6 次，整体 480 秒。失败保留，不静默退回规则答案。
 
 每次工具调用记录角色、参数、起止时间、状态、Evidence ID。Triage、Supervisor、RecoveryObserver、TestAgent、Critic 都计入完整工作流，不冒充 Investigator 的自主调用。模型调用保存 Provider 实际用量；字符估算单列。规则基线与评分器不作为 AI 调查推断。
 
-## Verification and patches
+## 验证与候选补丁
 
 确定性门禁检查引用、独立来源、服务出现在拓扑与引用中、信号处理、声明的矛盾、Patch 相关性、真实测试/重放和观测来源。服务出现检查只证明结构一致性，不能证明正确归因。Critic 独立上下文包含事故、证据、根因、Patch、测试和 Before/After；同一个模型的独立会话并不保证独立可靠性。
 
@@ -56,7 +56,7 @@ V2 使用有上限的原始预览，V3 对日志模板、指标窗口、Trace �
 
 Patch 风险分类依据文件数、LOC、数据库、并发、基础设施及 API Contract。所有 AI 候选都需要操作员明确 Apply；HIGH 不自动部署。模型没有任意 shell、SQL、文件写入、故障控制或环境读取能力。
 
-## Persistence and boundaries
+## 持久化与边界
 
 Checkpoint 保留状态、对话、工具批次与游标。成功工具在数据库落盘后可以复用，进程重启恢复相同 run，失败后可显式 Resume；模型响应尚未落盘等边界不具备 exactly-once。实际重启测试的成功与失败都保存在 `evaluation/resume-*.json`，不因证据保留就宣称后续工作流完成。详见 `reliability.md`。
 
