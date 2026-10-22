@@ -8,7 +8,7 @@ function destination(value,name,image=false){
  if(url.origin!=='https://sentinel.invalid')return !image&&['http:','https:'].includes(url.protocol)&&!url.username&&!url.password?url.href:null;
  if(image)return /^\/docs\/screenshots\/[a-z0-9-]+\.png$/.test(url.pathname)?url.pathname:null;
  if(value.startsWith('#'))return url.hash;
- if(['/README.md','/FINAL_STATUS.md','/CLAIMS_MATRIX.md'].includes(url.pathname)||/^\/docs\/[a-z0-9-]+\.md$/.test(url.pathname))return '/documentation.html?doc='+encodeURIComponent(url.pathname.slice(1))+url.hash;
+ if(['/README.md','/FINAL_STATUS.md','/CLAIMS_MATRIX.md'].includes(url.pathname)||/^\/docs\/[A-Za-z0-9_-]+\.md$/.test(url.pathname))return '/documentation.html?doc='+encodeURIComponent(url.pathname.slice(1))+url.hash;
  if(url.pathname==='/portfolio/verification.json')return '/api/portfolio/verification';
  return null;
 }
@@ -20,7 +20,7 @@ function inline(text,name,depth=0){
   if(t.startsWith('`'))html+='<code>'+escape(t.slice(1,-1))+'</code>';
   else if(t.startsWith('**'))html+='<strong>'+inline(t.slice(2,-2),name,depth+1)+'</strong>';
   else{const parts=/^(!?)\[([^\]]*)\]\(([^)]+)\)$/.exec(t),img=!!parts[1],url=destination(parts[3],name,img),label=escape(parts[2]);
-   if(!url)html+=`<span title="Reference unavailable in the public reader">${label}</span>`;
+   if(!url)html+=`<span title="此链接需在 GitHub 查看">${label}</span>`;
    else if(img)html+=`<img src="${escape(url)}" alt="${label}" loading="lazy">`;
    else html+=`<a href="${escape(url)}"${url.startsWith('http')?' target="_blank" rel="noopener noreferrer"':''}>${inline(parts[2],name,depth+1)}</a>`;
   }
